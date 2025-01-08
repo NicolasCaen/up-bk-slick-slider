@@ -279,6 +279,38 @@ export default function Edit({ attributes, setAttributes }) {
                                 initialOpen={tabletPanelOpen}
                                 onToggle={() => setTabletPanelOpen(!tabletPanelOpen)}
                             >
+                                <ToggleControl
+                                    label={__('Fixed Height', 'up-bk-slick-slider')}
+                                    checked={breakpoints.tablet.settings.fixedHeight}
+                                    onChange={(value) => updateBreakpointSetting('tablet', 'fixedHeight', value)}
+                                />
+                                {breakpoints.tablet.settings.fixedHeight && (
+                                    <TextControl
+                                        label={__('Slide Height', 'up-bk-slick-slider')}
+                                        value={breakpoints.tablet.settings.slideHeight}
+                                        onChange={(value) => updateBreakpointSetting('tablet', 'slideHeight', value)}
+                                        help={__('Enter height with units (e.g., 400px, 50vh, var(--my-height))', 'up-bk-slick-slider')}
+                                    />
+                                )}
+                                <SelectControl
+                                    label={__('Object Fit', 'up-bk-slick-slider')}
+                                    value={breakpoints.tablet.settings.objectFit}
+                                    options={[
+                                        { label: 'Cover', value: 'cover' },
+                                        { label: 'Contain', value: 'contain' },
+                                        { label: 'Fill', value: 'fill' },
+                                        { label: 'None', value: 'none' },
+                                    ]}
+                                    onChange={(value) => updateBreakpointSetting('tablet', 'objectFit', value)}
+                                />
+                                <RangeControl
+                                    label={__('Gap between slides (px)', 'up-bk-slick-slider')}
+                                    value={breakpoints.tablet.settings.gap}
+                                    onChange={(value) => updateBreakpointSetting('tablet', 'gap', value)}
+                                    min={0}
+                                    max={100}
+                                    step={1}
+                                />
                                 <RangeControl
                                     label={__('Slides to Show', 'up-bk-slick-slider')}
                                     value={breakpoints.tablet.settings.slidesToShow}
@@ -363,6 +395,38 @@ export default function Edit({ attributes, setAttributes }) {
                                 initialOpen={mobilePanelOpen}
                                 onToggle={() => setMobilePanelOpen(!mobilePanelOpen)}
                             >
+                                <ToggleControl
+                                    label={__('Fixed Height', 'up-bk-slick-slider')}
+                                    checked={breakpoints.mobile.settings.fixedHeight}
+                                    onChange={(value) => updateBreakpointSetting('mobile', 'fixedHeight', value)}
+                                />
+                                {breakpoints.mobile.settings.fixedHeight && (
+                                    <TextControl
+                                        label={__('Slide Height', 'up-bk-slick-slider')}
+                                        value={breakpoints.mobile.settings.slideHeight}
+                                        onChange={(value) => updateBreakpointSetting('mobile', 'slideHeight', value)}
+                                        help={__('Enter height with units (e.g., 400px, 50vh, var(--my-height))', 'up-bk-slick-slider')}
+                                    />
+                                )}
+                                <SelectControl
+                                    label={__('Object Fit', 'up-bk-slick-slider')}
+                                    value={breakpoints.mobile.settings.objectFit}
+                                    options={[
+                                        { label: 'Cover', value: 'cover' },
+                                        { label: 'Contain', value: 'contain' },
+                                        { label: 'Fill', value: 'fill' },
+                                        { label: 'None', value: 'none' },
+                                    ]}
+                                    onChange={(value) => updateBreakpointSetting('mobile', 'objectFit', value)}
+                                />
+                                <RangeControl
+                                    label={__('Gap between slides (px)', 'up-bk-slick-slider')}
+                                    value={breakpoints.mobile.settings.gap}
+                                    onChange={(value) => updateBreakpointSetting('mobile', 'gap', value)}
+                                    min={0}
+                                    max={100}
+                                    step={1}
+                                />
                                 <RangeControl
                                     label={__('Slides to Show', 'up-bk-slick-slider')}
                                     value={breakpoints.mobile.settings.slidesToShow}

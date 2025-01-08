@@ -1,145 +1,118 @@
 <?php
 /**
- * PHP file to use when rendering the block type on the server to show on the front end.
- *
- * The following variables are exposed to the file:
- *     $attributes (array): The block attributes.
- *     $content (string): The block default content.
- *     $block (WP_Block): The block instance.
- *
- * @see https://github.com/WordPress/gutenberg/blob/trunk/docs/reference-guides/block-api/block-metadata.md#render
+ * Render the slider block
  */
 
-// Clone attributes to avoid modifying the original
-$slick_attributes = $attributes;
+// Extract attributes
+$slick_attributes = $attributes ?? [];
 
-// Ensure fade mode only works with slidesToShow = 1
-if (!empty($slick_attributes['fade']) && $slick_attributes['fade']) {
-    $slick_attributes['slidesToShow'] = 1;
-    $slick_attributes['slidesToScroll'] = 1;
-} else {
-    // Only validate slidesToScroll if not in fade mode
-    if (!empty($slick_attributes['slidesToScroll']) && !empty($slick_attributes['slidesToShow'])) {
-        if ($slick_attributes['slidesToScroll'] > $slick_attributes['slidesToShow']) {
-            $slick_attributes['slidesToScroll'] = $slick_attributes['slidesToShow'];
-        }
-    }
-}
+// Base settings
+$autoplay = filter_var($slick_attributes['autoplay'] ?? true, FILTER_VALIDATE_BOOLEAN);
+$autoplaySpeed = intval($slick_attributes['autoplaySpeed'] ?? 3000);
+$arrows = filter_var($slick_attributes['arrows'] ?? true, FILTER_VALIDATE_BOOLEAN);
+$dots = filter_var($slick_attributes['dots'] ?? true, FILTER_VALIDATE_BOOLEAN);
+$infinite = filter_var($slick_attributes['infinite'] ?? true, FILTER_VALIDATE_BOOLEAN);
+$speed = intval($slick_attributes['speed'] ?? 500);
+$slidesToShow = intval($slick_attributes['slidesToShow'] ?? 3);
+$slidesToScroll = intval($slick_attributes['slidesToScroll'] ?? 1);
+$fade = filter_var($slick_attributes['fade'] ?? false, FILTER_VALIDATE_BOOLEAN);
+$centerMode = filter_var($slick_attributes['centerMode'] ?? false, FILTER_VALIDATE_BOOLEAN);
+$adaptiveHeight = filter_var($slick_attributes['adaptiveHeight'] ?? false, FILTER_VALIDATE_BOOLEAN);
+$pauseOnHover = filter_var($slick_attributes['pauseOnHover'] ?? true, FILTER_VALIDATE_BOOLEAN);
+$swipe = filter_var($slick_attributes['swipe'] ?? true, FILTER_VALIDATE_BOOLEAN);
+$responsive = filter_var($slick_attributes['responsive'] ?? true, FILTER_VALIDATE_BOOLEAN);
 
-// Get the gap value and number of slides
-$gap = !empty($slick_attributes['gap']) ? intval($slick_attributes['gap']) : 0;
-$slides_count = !empty($slick_attributes['slides']) ? count($slick_attributes['slides']) : 0;
-$slides_to_show = !empty($slick_attributes['slidesToShow']) ? intval($slick_attributes['slidesToShow']) : 1;
+// Dimension settings
+$fixedHeight = filter_var($slick_attributes['fixedHeight'] ?? false, FILTER_VALIDATE_BOOLEAN);
+$slideHeight = $slick_attributes['slideHeight'] ?? '400px';
+$objectFit = $slick_attributes['objectFit'] ?? 'cover';
+$gap = intval($slick_attributes['gap'] ?? 0);
 
-// Only apply gap if we have multiple slides and slidesToShow > 1
-$apply_gap = $slides_count > 1 && $slides_to_show > 1 && $gap > 0;
+// Prepare slick options
+$slick_options = [
+    'autoplay' => $autoplay,
+    'autoplaySpeed' => $autoplaySpeed,
+    'arrows' => $arrows,
+    'dots' => $dots,
+    'infinite' => $infinite,
+    'speed' => $speed,
+    'slidesToShow' => $slidesToShow,
+    'slidesToScroll' => $slidesToScroll,
+    'fade' => $fade,
+    'centerMode' => $centerMode,
+    'adaptiveHeight' => $adaptiveHeight,
+    'pauseOnHover' => $pauseOnHover,
+    'swipe' => $swipe,
+];
 
-// Prepare CSS variables
-$css_vars = [];
-if ($apply_gap) {
-    $css_vars[] = sprintf('--gap-size: %dpx', $gap);
-}
-
-// Add height and object-fit variables if fixed height is enabled
-if (!empty($slick_attributes['fixedHeight']) && !empty($slick_attributes['slideHeight'])) {
-    $css_vars[] = sprintf('--slide-height: %s', $slick_attributes['slideHeight']);
-    $css_vars[] = sprintf('--object-fit: %s', $slick_attributes['objectFit'] ?? 'cover');
-}
-
-// Convert boolean values to strings
-$autoplay = isset($slick_attributes['autoplay']) ? ($slick_attributes['autoplay'] ? 'true' : 'false') : 'true';
-$arrows = isset($slick_attributes['arrows']) ? ($slick_attributes['arrows'] ? 'true' : 'false') : 'true';
-$dots = isset($slick_attributes['dots']) ? ($slick_attributes['dots'] ? 'true' : 'false') : 'true';
-$infinite = isset($slick_attributes['infinite']) ? ($slick_attributes['infinite'] ? 'true' : 'false') : 'true';
-$fade = isset($slick_attributes['fade']) ? ($slick_attributes['fade'] ? 'true' : 'false') : 'false';
-$centerMode = isset($slick_attributes['centerMode']) ? ($slick_attributes['centerMode'] ? 'true' : 'false') : 'false';
-$adaptiveHeight = isset($slick_attributes['adaptiveHeight']) ? ($slick_attributes['adaptiveHeight'] ? 'true' : 'false') : 'false';
-$pauseOnHover = isset($slick_attributes['pauseOnHover']) ? ($slick_attributes['pauseOnHover'] ? 'true' : 'false') : 'true';
-$swipe = isset($slick_attributes['swipe']) ? ($slick_attributes['swipe'] ? 'true' : 'false') : 'true';
-$responsive = isset($slick_attributes['responsive']) ? ($slick_attributes['responsive'] ? 'true' : 'false') : 'true';
-
-// Convert numeric values
-$autoplaySpeed = isset($slick_attributes['autoplaySpeed']) ? intval($slick_attributes['autoplaySpeed']) : 3000;
-$speed = isset($slick_attributes['speed']) ? intval($slick_attributes['speed']) : 500;
-$slidesToShow = isset($slick_attributes['slidesToShow']) ? intval($slick_attributes['slidesToShow']) : 1;
-$slidesToScroll = isset($slick_attributes['slidesToScroll']) ? intval($slick_attributes['slidesToScroll']) : 1;
-
-// Prepare wrapper attributes
-$wrapper_style = !empty($css_vars) ? implode(';', $css_vars) : '';
-$wrapper_attributes = get_block_wrapper_attributes(['style' => $wrapper_style]);
-
-// Prepare breakpoints only if responsive is enabled
-$breakpoints = '[]';
-if ($responsive === 'true' && !empty($slick_attributes['breakpoints'])) {
+// Add responsive settings
+if ($responsive && !empty($slick_attributes['breakpoints'])) {
     $responsive_array = [];
     
     // Format for tablet
-    if (!empty($slick_attributes['breakpoints']['tablet'])) {
+    if (!empty($slick_attributes['breakpoints']['tablet']['settings'])) {
         $tablet_settings = $slick_attributes['breakpoints']['tablet']['settings'];
+        $tablet_settings['gap'] = intval($tablet_settings['gap'] ?? $gap);
         $responsive_array[] = [
             'breakpoint' => 1024,
-            'settings' => array_map(function($value) {
-                if (is_bool($value)) {
-                    return $value;
-                } elseif (is_numeric($value)) {
-                    return intval($value);
-                }
-                return $value;
-            }, $tablet_settings)
+            'settings' => $tablet_settings
         ];
     }
     
     // Format for mobile
-    if (!empty($slick_attributes['breakpoints']['mobile'])) {
+    if (!empty($slick_attributes['breakpoints']['mobile']['settings'])) {
         $mobile_settings = $slick_attributes['breakpoints']['mobile']['settings'];
+        $mobile_settings['gap'] = intval($mobile_settings['gap'] ?? $gap);
         $responsive_array[] = [
             'breakpoint' => 480,
-            'settings' => array_map(function($value) {
-                if (is_bool($value)) {
-                    return $value;
-                } elseif (is_numeric($value)) {
-                    return intval($value);
-                }
-                return $value;
-            }, $mobile_settings)
+            'settings' => $mobile_settings
         ];
     }
     
-    $breakpoints = wp_json_encode($responsive_array, JSON_UNESCAPED_SLASHES | JSON_NUMERIC_CHECK);
+    $slick_options['responsive'] = $responsive_array;
 }
+
+$slides = !empty($slick_attributes['slides']) ? $slick_attributes['slides'] : [];
+
+// Initial styles
+$initial_styles = [];
+if ($fixedHeight) {
+    $initial_styles[] = sprintf('height: %s', esc_attr($slideHeight));
+}
+$initial_styles[] = sprintf('--desktop-gap: %dpx', $gap);
+$initial_styles[] = sprintf('--desktop-object-fit: %s', esc_attr($objectFit));
+
+$style_string = implode('; ', $initial_styles);
 ?>
 
-<div <?php echo $wrapper_attributes; ?>>
-    <?php if (!empty($slick_attributes['slides'])) : ?>
-        <div class="slick-slider<?php echo !empty($slick_attributes['fixedHeight']) ? ' fixed-height' : ''; ?>"
-             data-autoplay="<?php echo esc_attr($autoplay); ?>"
-             data-autoplay-speed="<?php echo esc_attr($autoplaySpeed); ?>"
-             data-arrows="<?php echo esc_attr($arrows); ?>"
-             data-dots="<?php echo esc_attr($dots); ?>"
-             data-infinite="<?php echo esc_attr($infinite); ?>"
-             data-speed="<?php echo esc_attr($speed); ?>"
-             data-slides-to-show="<?php echo esc_attr($slidesToShow); ?>"
-             data-slides-to-scroll="<?php echo esc_attr($slidesToScroll); ?>"
-             data-fade="<?php echo esc_attr($fade); ?>"
-             data-center-mode="<?php echo esc_attr($centerMode); ?>"
-             data-adaptive-height="<?php echo esc_attr($adaptiveHeight); ?>"
-             data-pause-on-hover="<?php echo esc_attr($pauseOnHover); ?>"
-             data-swipe="<?php echo esc_attr($swipe); ?>"
-             data-responsive='<?php echo $breakpoints; ?>'
-             data-responsive-enabled="<?php echo esc_attr($responsive); ?>"
-             <?php if ($apply_gap) : ?>
-             style="margin: 0 -<?php echo esc_attr($gap / 2); ?>px;"
-             <?php endif; ?>>
-            <?php foreach ($slick_attributes['slides'] as $slide) : ?>
-                <?php if (!empty($slide['url'])) : ?>
-                    <div <?php if ($apply_gap) : ?>style="padding: 0 <?php echo esc_attr($gap / 2); ?>px;"<?php endif; ?>>
-                        <img src="<?php echo esc_url($slide['url']); ?>" 
-                             alt="<?php echo esc_attr($slide['alt'] ?? ''); ?>"
-                             class="slick-slide-image"
-                             decoding="async" />
-                    </div>
-                <?php endif; ?>
-            <?php endforeach; ?>
-        </div>
-    <?php endif; ?>
+<div class="wp-block-up-bk-slick-slider">
+    <div class="slick-slider" 
+        data-slick='<?php echo wp_json_encode($slick_options); ?>'
+        style="<?php echo $style_string; ?>">
+        <?php foreach ($slides as $slide) : ?>
+            <div class="slick-slide-item">
+                <img 
+                    src="<?php echo esc_url($slide['url']); ?>" 
+                    alt="<?php echo esc_attr($slide['alt']); ?>"
+                    decoding="async"
+                />
+            </div>
+        <?php endforeach; ?>
+    </div>
 </div>
+
+<style>
+.wp-block-up-bk-slick-slider .slick-slider {
+    margin: 0 calc(var(--gap, var(--desktop-gap)) * -0.5);
+}
+
+.wp-block-up-bk-slick-slider .slick-slide-item {
+    padding: 0 calc(var(--gap, var(--desktop-gap)) * 0.5);
+}
+
+.wp-block-up-bk-slick-slider .slick-slide-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: var(--desktop-object-fit, cover);
+}
+</style>
