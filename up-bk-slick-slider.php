@@ -53,7 +53,7 @@ function up_bk_slick_slider_block_init() {
         'up-bk-slick-slider-style',
         plugins_url('build/index.css', __FILE__),
         array(),
-        '1.0.0'
+       null
     );
 
     // Register block

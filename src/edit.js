@@ -108,7 +108,7 @@ export default function Edit({ attributes, setAttributes }) {
                         value={gap}
                         onChange={(value) => setAttributes({ gap: value })}
                         min={0}
-                        max={100}
+                        max={300}
                         step={1}
                     />
                 </PanelBody>
