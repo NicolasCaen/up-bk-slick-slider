@@ -1,7 +1,7 @@
 {
 	"name": "up-bk-slick-slider",
 	"version": "0.1.0",
-	"description": "Display your site's copyright date.",
+	"description": "Example block scaffolded with Create Block tool.",
 	"author": "The WordPress Contributors",
 	"license": "GPL-2.0-or-later",
 	"main": "build/index.js",
@@ -17,6 +17,6 @@
 	},
 	"devDependencies": {
 		"@wordpress/env": "^10.15.0",
-		"@wordpress/scripts": "^30.8.1"
+		"@wordpress/scripts": "^26.19.0"
 	}
 }

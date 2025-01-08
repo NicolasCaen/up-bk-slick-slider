@@ -24,19 +24,7 @@ jobs:
         run: npm run build
         
       - name: Create plugin archive
-        run: |
-          # Create a clean directory for the plugin
-          mkdir up-bk-slick-slider
-          
-          # Copy only the necessary files
-          cp -r build up-bk-slick-slider/
-          cp -r assets up-bk-slick-slider/
-          cp *.php up-bk-slick-slider/
-          cp readme.txt up-bk-slick-slider/
-          cp LICENSE up-bk-slick-slider/
-          
-          # Create ZIP file
-          zip -r up-bk-slick-slider.zip up-bk-slick-slider
+        run: npm run plugin-zip
           
       - name: Upload Release Asset
         uses: actions/upload-release-asset@v1
