@@ -14,17 +14,31 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '18'
+          node-version: '20'
           cache: 'npm'
           
       - name: Install dependencies
-        run: npm ci
+        run: |
+          npm install
+          npm install @wordpress/scripts@30.8.1 --save-dev
         
       - name: Build
         run: npm run build
         
       - name: Create plugin archive
-        run: npm run plugin-zip
+        run: |
+          # Create a clean directory for the plugin
+          mkdir up-bk-slick-slider
+          
+          # Copy only the necessary files
+          cp -r build up-bk-slick-slider/
+          cp -r assets up-bk-slick-slider/
+          cp *.php up-bk-slick-slider/
+          cp readme.txt up-bk-slick-slider/
+          cp LICENSE up-bk-slick-slider/
+          
+          # Create ZIP file
+          zip -r up-bk-slick-slider.zip up-bk-slick-slider
           
       - name: Upload Release Asset
         uses: actions/upload-release-asset@v1
