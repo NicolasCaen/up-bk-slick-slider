@@ -72,32 +72,54 @@ $wrapper_attributes = get_block_wrapper_attributes(['style' => $wrapper_style]);
 $breakpoints = '[]';
 if ($responsive === 'true' && !empty($slick_attributes['breakpoints'])) {
     $responsive_array = [];
-    foreach ($slick_attributes['breakpoints'] as $device => $config) {
-        $settings = $config['settings'];
+    
+    // Format for tablet
+    if (!empty($slick_attributes['breakpoints']['tablet'])) {
+        $tablet_settings = $slick_attributes['breakpoints']['tablet']['settings'];
         $responsive_array[] = [
-            'breakpoint' => intval($config['breakpoint']),
+            'breakpoint' => 1024,
             'settings' => [
-                'slidesToShow' => intval($settings['slidesToShow']),
-                'slidesToScroll' => intval($settings['slidesToScroll']),
-                'arrows' => $settings['arrows'] ? true : false,
-                'dots' => $settings['dots'] ? true : false,
-                'autoplay' => $settings['autoplay'] ? true : false,
-                'autoplaySpeed' => intval($settings['autoplaySpeed']),
-                'infinite' => $settings['infinite'] ? true : false,
-                'speed' => intval($settings['speed']),
-                'fade' => $settings['fade'] ? true : false,
-                'centerMode' => $settings['centerMode'] ? true : false,
-                'adaptiveHeight' => $settings['adaptiveHeight'] ? true : false,
-                'pauseOnHover' => $settings['pauseOnHover'] ? true : false,
-                'swipe' => $settings['swipe'] ? true : false
+                'slidesToShow' => intval($tablet_settings['slidesToShow']),
+                'slidesToScroll' => intval($tablet_settings['slidesToScroll']),
+                'arrows' => filter_var($tablet_settings['arrows'], FILTER_VALIDATE_BOOLEAN),
+                'dots' => filter_var($tablet_settings['dots'], FILTER_VALIDATE_BOOLEAN),
+                'autoplay' => filter_var($tablet_settings['autoplay'], FILTER_VALIDATE_BOOLEAN),
+                'autoplaySpeed' => intval($tablet_settings['autoplaySpeed']),
+                'infinite' => filter_var($tablet_settings['infinite'], FILTER_VALIDATE_BOOLEAN),
+                'speed' => intval($tablet_settings['speed']),
+                'fade' => filter_var($tablet_settings['fade'], FILTER_VALIDATE_BOOLEAN),
+                'centerMode' => filter_var($tablet_settings['centerMode'], FILTER_VALIDATE_BOOLEAN),
+                'adaptiveHeight' => filter_var($tablet_settings['adaptiveHeight'], FILTER_VALIDATE_BOOLEAN),
+                'pauseOnHover' => filter_var($tablet_settings['pauseOnHover'], FILTER_VALIDATE_BOOLEAN),
+                'swipe' => filter_var($tablet_settings['swipe'], FILTER_VALIDATE_BOOLEAN)
             ]
         ];
     }
-    // Sort breakpoints in descending order
-    usort($responsive_array, function($a, $b) {
-        return $b['breakpoint'] - $a['breakpoint'];
-    });
-    $breakpoints = wp_json_encode($responsive_array);
+    
+    // Format for mobile
+    if (!empty($slick_attributes['breakpoints']['mobile'])) {
+        $mobile_settings = $slick_attributes['breakpoints']['mobile']['settings'];
+        $responsive_array[] = [
+            'breakpoint' => 480,
+            'settings' => [
+                'slidesToShow' => intval($mobile_settings['slidesToShow']),
+                'slidesToScroll' => intval($mobile_settings['slidesToScroll']),
+                'arrows' => filter_var($mobile_settings['arrows'], FILTER_VALIDATE_BOOLEAN),
+                'dots' => filter_var($mobile_settings['dots'], FILTER_VALIDATE_BOOLEAN),
+                'autoplay' => filter_var($mobile_settings['autoplay'], FILTER_VALIDATE_BOOLEAN),
+                'autoplaySpeed' => intval($mobile_settings['autoplaySpeed']),
+                'infinite' => filter_var($mobile_settings['infinite'], FILTER_VALIDATE_BOOLEAN),
+                'speed' => intval($mobile_settings['speed']),
+                'fade' => filter_var($mobile_settings['fade'], FILTER_VALIDATE_BOOLEAN),
+                'centerMode' => filter_var($mobile_settings['centerMode'], FILTER_VALIDATE_BOOLEAN),
+                'adaptiveHeight' => filter_var($mobile_settings['adaptiveHeight'], FILTER_VALIDATE_BOOLEAN),
+                'pauseOnHover' => filter_var($mobile_settings['pauseOnHover'], FILTER_VALIDATE_BOOLEAN),
+                'swipe' => filter_var($mobile_settings['swipe'], FILTER_VALIDATE_BOOLEAN)
+            ]
+        ];
+    }
+    
+    $breakpoints = wp_json_encode($responsive_array, JSON_UNESCAPED_SLASHES);
 }
 ?>
 

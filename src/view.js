@@ -52,10 +52,24 @@ document.addEventListener('DOMContentLoaded', function () {
         // Add responsive breakpoints if enabled
         if (parseBool(slider.dataset.responsiveEnabled)) {
             try {
-                const responsive = JSON.parse(slider.dataset.responsive);
-                console.log('Parsed responsive settings:', responsive);
-                if (Array.isArray(responsive) && responsive.length > 0) {
-                    options.responsive = responsive;
+                const responsiveData = slider.dataset.responsive;
+                if (responsiveData) {
+                    const responsive = JSON.parse(responsiveData);
+                    console.log('Parsed responsive settings:', responsive);
+                    if (Array.isArray(responsive) && responsive.length > 0) {
+                        // Ensure all boolean values are properly converted
+                        options.responsive = responsive.map(breakpoint => ({
+                            breakpoint: breakpoint.breakpoint,
+                            settings: {
+                                ...breakpoint.settings,
+                                slidesToShow: parseInt(breakpoint.settings.slidesToShow, 1),
+                                slidesToScroll: parseInt(breakpoint.settings.slidesToScroll, 1),
+                                autoplaySpeed: parseInt(breakpoint.settings.autoplaySpeed, 3000),
+                                speed: parseInt(breakpoint.settings.speed, 500)
+                            }
+                        }));
+                        console.log('Processed responsive settings:', options.responsive);
+                    }
                 }
             } catch (e) {
                 console.error('Error parsing responsive settings:', e);
