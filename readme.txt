@@ -1,18 +1,18 @@
 === UP BK Slick Slider ===
-Contributors: upagency
-Tags: slider, slick, carousel, gutenberg, block
+Contributors: UP
+Tags: block, slider, slick
 Requires at least: 6.1
 Tested up to: 6.4
-Stable tag: 1.1.0
+Stable tag: 1.3
 Requires PHP: 7.0
-License: GPLv2 or later
+License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-A Gutenberg block that adds a Slick Slider to your WordPress site.
+A WordPress block for creating beautiful sliders using Slick JS.
 
 == Description ==
 
-UP BK Slick Slider is a Gutenberg block that allows you to easily add a Slick Slider to your WordPress site. The block provides a simple interface to upload and manage your slides, with various customization options.
+This plugin adds a new block to the WordPress editor that allows you to create beautiful and responsive sliders using the Slick JS library.
 
 Features:
 
@@ -47,6 +47,12 @@ Yes, you can customize various settings in the block sidebar, including:
 
 == Changelog ==
 
+= 1.3 =
+* Amélioration de la gestion responsive des slides
+* Correction des gaps entre les slides
+* Ajustement dynamique des hauteurs et de l'object-fit en fonction de la taille d'écran
+* Optimisation des styles pour une meilleure compatibilité mobile
+
 = 1.2.0 =
 * Amélioration : Gestion améliorée des paramètres responsifs
 * Correction : Les panneaux de paramètres restent ouverts lors des modifications
@@ -61,6 +67,9 @@ Yes, you can customize various settings in the block sidebar, including:
 * Initial release
 
 == Upgrade Notice ==
+
+= 1.3 =
+This version includes improvements to the responsive management of slides, correction of gaps between slides, and dynamic adjustment of heights and object-fit based on screen size.
 
 = 1.1.0 =
 This version includes improvements to the build process and fixes issues with the slider initialization on the frontend.
