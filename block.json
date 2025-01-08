@@ -102,11 +102,5 @@
     "editorScript": "file:./build/index.js",
     "editorStyle": "file:./build/index.css",
     "style": "file:./build/style-index.css",
-    "render": "file:./src/render.php",
-    "viewScript": "file:./build/view.js",
-    "dependencies": {
-        "wp-blocks": "wp-blocks",
-        "wp-element": "wp-element",
-        "wp-i18n": "wp-i18n"
-    }
+    "viewScript": "file:./build/view.js"
 }

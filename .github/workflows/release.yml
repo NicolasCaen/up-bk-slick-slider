@@ -27,9 +27,6 @@ jobs:
       - name: Build
         run: npm run build
         
-      - name: Copy render.php to build
-        run: cp src/render.php build/
-        
       - name: Create plugin archive
         run: |
           # Create a clean directory for the plugin
@@ -38,9 +35,12 @@ jobs:
           # Copy only the necessary files
           cp -r build up-bk-slick-slider/
           cp -r assets up-bk-slick-slider/
+          cp block.json up-bk-slick-slider/
+          cp webpack.config.js up-bk-slick-slider/
           cp *.php up-bk-slick-slider/
           cp readme.txt up-bk-slick-slider/
           cp LICENSE up-bk-slick-slider/
+          cp package.json up-bk-slick-slider/
           
           # Create ZIP file
           zip -r up-bk-slick-slider.zip up-bk-slick-slider

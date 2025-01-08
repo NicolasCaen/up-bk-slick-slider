@@ -57,7 +57,9 @@ function up_bk_slick_slider_block_init() {
     );
 
     // Register block
-    register_block_type(__DIR__);
+    register_block_type(__DIR__, array(
+        'render_callback' => 'up_bk_slick_slider_render_callback'
+    ));
 
     // Always enqueue Slick assets and block styles on the frontend
     if (!is_admin()) {
@@ -65,7 +67,6 @@ function up_bk_slick_slider_block_init() {
         wp_enqueue_script('slick-carousel-js');
         wp_enqueue_style('slick-carousel-css');
         wp_enqueue_style('slick-carousel-theme');
-        wp_enqueue_style('up-bk-slick-slider-style');
     }
 }
 add_action('init', 'up_bk_slick_slider_block_init');

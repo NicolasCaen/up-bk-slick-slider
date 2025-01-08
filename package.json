@@ -1,8 +1,8 @@
 {
 	"name": "up-bk-slick-slider",
 	"version": "0.1.0",
-	"description": "Example block scaffolded with Create Block tool.",
-	"author": "The WordPress Contributors",
+	"description": "A WordPress block for creating beautiful sliders using Slick JS",
+	"author": "UP",
 	"license": "GPL-2.0-or-later",
 	"main": "build/index.js",
 	"scripts": {
@@ -12,10 +12,9 @@
 		"lint:js": "wp-scripts lint-js",
 		"packages-update": "wp-scripts packages-update",
 		"plugin-zip": "wp-scripts plugin-zip",
-		"start": "wp-scripts start & cp src/render.php build/"
+		"start": "wp-scripts start"
 	},
 	"devDependencies": {
-		"@wordpress/env": "^10.15.0",
 		"@wordpress/scripts": "^26.19.0"
 	}
 }
