@@ -5,14 +5,15 @@ import {
     MediaUpload,
     MediaUploadCheck,
 } from '@wordpress/block-editor';
-import {
-    PanelBody,
-    Button,
-    ToggleControl,
+import { 
+    PanelBody, 
+    Button, 
+    ToggleControl, 
     RangeControl,
-    TextControl,
     SelectControl,
-    Notice,
+    TextControl,
+    TabPanel,
+    Notice
 } from '@wordpress/components';
 import { useSelect } from '@wordpress/data';
 import { useEffect, useState } from '@wordpress/element';
@@ -40,6 +41,8 @@ export default function Edit({ attributes, setAttributes }) {
         adaptiveHeight,
         pauseOnHover,
         swipe,
+        breakpoints,
+        responsive
     } = attributes;
 
     const blockProps = useBlockProps();
@@ -81,6 +84,12 @@ export default function Edit({ attributes, setAttributes }) {
             alt: image.alt || '',
         }));
         setAttributes({ slides: newSlides });
+    };
+
+    const updateBreakpointSetting = (device, field, value) => {
+        const newBreakpoints = { ...breakpoints };
+        newBreakpoints[device].settings[field] = value;
+        setAttributes({ breakpoints: newBreakpoints });
     };
 
     return (
@@ -251,6 +260,178 @@ export default function Edit({ attributes, setAttributes }) {
                         checked={swipe}
                         onChange={(value) => setAttributes({ swipe: value })}
                     />
+                </PanelBody>
+
+                <PanelBody title={__('Responsive Settings', 'up-bk-slick-slider')} initialOpen={false}>
+                    <ToggleControl
+                        label={__('Enable Responsive Mode', 'up-bk-slick-slider')}
+                        checked={responsive}
+                        onChange={(value) => setAttributes({ responsive: value })}
+                    />
+
+                    {responsive && (
+                        <>
+                            <PanelBody title={__('Tablet Settings (≤ 1024px)', 'up-bk-slick-slider')} initialOpen={false}>
+                                <RangeControl
+                                    label={__('Slides to Show', 'up-bk-slick-slider')}
+                                    value={breakpoints.tablet.settings.slidesToShow}
+                                    onChange={(value) => updateBreakpointSetting('tablet', 'slidesToShow', value)}
+                                    min={1}
+                                    max={10}
+                                />
+                                <RangeControl
+                                    label={__('Slides to Scroll', 'up-bk-slick-slider')}
+                                    value={breakpoints.tablet.settings.slidesToScroll}
+                                    onChange={(value) => updateBreakpointSetting('tablet', 'slidesToScroll', value)}
+                                    min={1}
+                                    max={10}
+                                />
+                                <ToggleControl
+                                    label={__('Show Arrows', 'up-bk-slick-slider')}
+                                    checked={breakpoints.tablet.settings.arrows}
+                                    onChange={(value) => updateBreakpointSetting('tablet', 'arrows', value)}
+                                />
+                                <ToggleControl
+                                    label={__('Show Dots', 'up-bk-slick-slider')}
+                                    checked={breakpoints.tablet.settings.dots}
+                                    onChange={(value) => updateBreakpointSetting('tablet', 'dots', value)}
+                                />
+                                <ToggleControl
+                                    label={__('Autoplay', 'up-bk-slick-slider')}
+                                    checked={breakpoints.tablet.settings.autoplay}
+                                    onChange={(value) => updateBreakpointSetting('tablet', 'autoplay', value)}
+                                />
+                                {breakpoints.tablet.settings.autoplay && (
+                                    <RangeControl
+                                        label={__('Autoplay Speed (ms)', 'up-bk-slick-slider')}
+                                        value={breakpoints.tablet.settings.autoplaySpeed}
+                                        onChange={(value) => updateBreakpointSetting('tablet', 'autoplaySpeed', value)}
+                                        min={1000}
+                                        max={10000}
+                                        step={500}
+                                    />
+                                )}
+                                <ToggleControl
+                                    label={__('Infinite Loop', 'up-bk-slick-slider')}
+                                    checked={breakpoints.tablet.settings.infinite}
+                                    onChange={(value) => updateBreakpointSetting('tablet', 'infinite', value)}
+                                />
+                                <RangeControl
+                                    label={__('Animation Speed (ms)', 'up-bk-slick-slider')}
+                                    value={breakpoints.tablet.settings.speed}
+                                    onChange={(value) => updateBreakpointSetting('tablet', 'speed', value)}
+                                    min={100}
+                                    max={3000}
+                                    step={100}
+                                />
+                                <ToggleControl
+                                    label={__('Fade Effect', 'up-bk-slick-slider')}
+                                    checked={breakpoints.tablet.settings.fade}
+                                    onChange={(value) => updateBreakpointSetting('tablet', 'fade', value)}
+                                />
+                                <ToggleControl
+                                    label={__('Center Mode', 'up-bk-slick-slider')}
+                                    checked={breakpoints.tablet.settings.centerMode}
+                                    onChange={(value) => updateBreakpointSetting('tablet', 'centerMode', value)}
+                                />
+                                <ToggleControl
+                                    label={__('Adaptive Height', 'up-bk-slick-slider')}
+                                    checked={breakpoints.tablet.settings.adaptiveHeight}
+                                    onChange={(value) => updateBreakpointSetting('tablet', 'adaptiveHeight', value)}
+                                />
+                                <ToggleControl
+                                    label={__('Pause on Hover', 'up-bk-slick-slider')}
+                                    checked={breakpoints.tablet.settings.pauseOnHover}
+                                    onChange={(value) => updateBreakpointSetting('tablet', 'pauseOnHover', value)}
+                                />
+                                <ToggleControl
+                                    label={__('Enable Swipe', 'up-bk-slick-slider')}
+                                    checked={breakpoints.tablet.settings.swipe}
+                                    onChange={(value) => updateBreakpointSetting('tablet', 'swipe', value)}
+                                />
+                            </PanelBody>
+
+                            <PanelBody title={__('Mobile Settings (≤ 480px)', 'up-bk-slick-slider')} initialOpen={false}>
+                                <RangeControl
+                                    label={__('Slides to Show', 'up-bk-slick-slider')}
+                                    value={breakpoints.mobile.settings.slidesToShow}
+                                    onChange={(value) => updateBreakpointSetting('mobile', 'slidesToShow', value)}
+                                    min={1}
+                                    max={10}
+                                />
+                                <RangeControl
+                                    label={__('Slides to Scroll', 'up-bk-slick-slider')}
+                                    value={breakpoints.mobile.settings.slidesToScroll}
+                                    onChange={(value) => updateBreakpointSetting('mobile', 'slidesToScroll', value)}
+                                    min={1}
+                                    max={10}
+                                />
+                                <ToggleControl
+                                    label={__('Show Arrows', 'up-bk-slick-slider')}
+                                    checked={breakpoints.mobile.settings.arrows}
+                                    onChange={(value) => updateBreakpointSetting('mobile', 'arrows', value)}
+                                />
+                                <ToggleControl
+                                    label={__('Show Dots', 'up-bk-slick-slider')}
+                                    checked={breakpoints.mobile.settings.dots}
+                                    onChange={(value) => updateBreakpointSetting('mobile', 'dots', value)}
+                                />
+                                <ToggleControl
+                                    label={__('Autoplay', 'up-bk-slick-slider')}
+                                    checked={breakpoints.mobile.settings.autoplay}
+                                    onChange={(value) => updateBreakpointSetting('mobile', 'autoplay', value)}
+                                />
+                                {breakpoints.mobile.settings.autoplay && (
+                                    <RangeControl
+                                        label={__('Autoplay Speed (ms)', 'up-bk-slick-slider')}
+                                        value={breakpoints.mobile.settings.autoplaySpeed}
+                                        onChange={(value) => updateBreakpointSetting('mobile', 'autoplaySpeed', value)}
+                                        min={1000}
+                                        max={10000}
+                                        step={500}
+                                    />
+                                )}
+                                <ToggleControl
+                                    label={__('Infinite Loop', 'up-bk-slick-slider')}
+                                    checked={breakpoints.mobile.settings.infinite}
+                                    onChange={(value) => updateBreakpointSetting('mobile', 'infinite', value)}
+                                />
+                                <RangeControl
+                                    label={__('Animation Speed (ms)', 'up-bk-slick-slider')}
+                                    value={breakpoints.mobile.settings.speed}
+                                    onChange={(value) => updateBreakpointSetting('mobile', 'speed', value)}
+                                    min={100}
+                                    max={3000}
+                                    step={100}
+                                />
+                                <ToggleControl
+                                    label={__('Fade Effect', 'up-bk-slick-slider')}
+                                    checked={breakpoints.mobile.settings.fade}
+                                    onChange={(value) => updateBreakpointSetting('mobile', 'fade', value)}
+                                />
+                                <ToggleControl
+                                    label={__('Center Mode', 'up-bk-slick-slider')}
+                                    checked={breakpoints.mobile.settings.centerMode}
+                                    onChange={(value) => updateBreakpointSetting('mobile', 'centerMode', value)}
+                                />
+                                <ToggleControl
+                                    label={__('Adaptive Height', 'up-bk-slick-slider')}
+                                    checked={breakpoints.mobile.settings.adaptiveHeight}
+                                    onChange={(value) => updateBreakpointSetting('mobile', 'adaptiveHeight', value)}
+                                />
+                                <ToggleControl
+                                    label={__('Pause on Hover', 'up-bk-slick-slider')}
+                                    checked={breakpoints.mobile.settings.pauseOnHover}
+                                    onChange={(value) => updateBreakpointSetting('mobile', 'pauseOnHover', value)}
+                                />
+                                <ToggleControl
+                                    label={__('Enable Swipe', 'up-bk-slick-slider')}
+                                    checked={breakpoints.mobile.settings.swipe}
+                                    onChange={(value) => updateBreakpointSetting('mobile', 'swipe', value)}
+                                />
+                            </PanelBody>
+                        </>
+                    )}
                 </PanelBody>
             </InspectorControls>
 

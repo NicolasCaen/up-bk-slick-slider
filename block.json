@@ -96,6 +96,59 @@
         "swipe": {
             "type": "boolean",
             "default": true
+        },
+        "responsive": {
+            "type": "boolean",
+            "default": true
+        },
+        "breakpoints": {
+            "type": "object",
+            "default": {
+                "tablet": {
+                    "breakpoint": 1024,
+                    "settings": {
+                        "slidesToShow": 1,
+                        "slidesToScroll": 1,
+                        "arrows": true,
+                        "dots": true,
+                        "autoplay": true,
+                        "autoplaySpeed": 3000,
+                        "infinite": true,
+                        "speed": 500,
+                        "fade": false,
+                        "centerMode": false,
+                        "adaptiveHeight": false,
+                        "pauseOnHover": true,
+                        "swipe": true,
+                        "gap": 0,
+                        "fixedHeight": false,
+                        "slideHeight": "",
+                        "objectFit": "cover"
+                    }
+                },
+                "mobile": {
+                    "breakpoint": 480,
+                    "settings": {
+                        "slidesToShow": 1,
+                        "slidesToScroll": 1,
+                        "arrows": false,
+                        "dots": true,
+                        "autoplay": true,
+                        "autoplaySpeed": 3000,
+                        "infinite": true,
+                        "speed": 500,
+                        "fade": false,
+                        "centerMode": false,
+                        "adaptiveHeight": false,
+                        "pauseOnHover": true,
+                        "swipe": true,
+                        "gap": 0,
+                        "fixedHeight": false,
+                        "slideHeight": "",
+                        "objectFit": "cover"
+                    }
+                }
+            }
         }
     },
     "textdomain": "up-bk-slick-slider",
