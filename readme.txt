@@ -47,6 +47,11 @@ Yes, you can customize various settings in the block sidebar, including:
 
 == Changelog ==
 
+= 1.2.0 =
+* Amélioration : Gestion améliorée des paramètres responsifs
+* Correction : Les panneaux de paramètres restent ouverts lors des modifications
+* Correction : Meilleure gestion des types de données pour les paramètres du slider
+
 = 1.1.0 =
 * Added view.js for frontend slider initialization
 * Improved block registration with block.json
