@@ -85,6 +85,6 @@ function up_bk_slick_slider_render_callback($attributes, $content, $block) {
     wp_enqueue_style('slick-carousel-theme');
 
     ob_start();
-    require plugin_dir_path(__FILE__) . 'src/render.php';
+    require plugin_dir_path(__FILE__) . 'build/render.php';
     return ob_get_clean();
 }

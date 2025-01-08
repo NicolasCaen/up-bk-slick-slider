@@ -27,6 +27,9 @@ jobs:
       - name: Build
         run: npm run build
         
+      - name: Copy render.php to build
+        run: cp src/render.php build/
+        
       - name: Create plugin archive
         run: |
           # Create a clean directory for the plugin
