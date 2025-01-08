@@ -25,28 +25,30 @@ document.addEventListener('DOMContentLoaded', function () {
         const parseBool = (value) => value === 'true';
         
         // Helper function to parse integer attributes
-        const parseInt = (value, defaultValue) => {
-            const parsed = Number(value);
+        const parseInteger = (value, defaultValue) => {
+            const parsed = parseInt(value, 10);
             return isNaN(parsed) ? defaultValue : parsed;
         };
 
         // Log all data attributes
         console.log('Slider', index, 'data attributes:', slider.dataset);
 
+        // Base options
         const options = {
             autoplay: parseBool(slider.dataset.autoplay),
-            autoplaySpeed: parseInt(slider.dataset.autoplaySpeed, 3000),
+            autoplaySpeed: parseInteger(slider.dataset.autoplaySpeed, 3000),
             arrows: parseBool(slider.dataset.arrows),
             dots: parseBool(slider.dataset.dots),
             infinite: parseBool(slider.dataset.infinite),
-            speed: parseInt(slider.dataset.speed, 500),
-            slidesToShow: parseInt(slider.dataset.slidesToShow, 1),
-            slidesToScroll: parseInt(slider.dataset.slidesToScroll, 1),
+            speed: parseInteger(slider.dataset.speed, 500),
+            slidesToShow: parseInteger(slider.dataset.slidesToShow, 1),
+            slidesToScroll: parseInteger(slider.dataset.slidesToScroll, 1),
             fade: parseBool(slider.dataset.fade),
             centerMode: parseBool(slider.dataset.centerMode),
             adaptiveHeight: parseBool(slider.dataset.adaptiveHeight),
             pauseOnHover: parseBool(slider.dataset.pauseOnHover),
-            swipe: parseBool(slider.dataset.swipe)
+            swipe: parseBool(slider.dataset.swipe),
+            responsive: null
         };
 
         // Add responsive breakpoints if enabled
@@ -54,37 +56,29 @@ document.addEventListener('DOMContentLoaded', function () {
             try {
                 const responsiveData = slider.dataset.responsive;
                 if (responsiveData) {
-                    const responsive = JSON.parse(responsiveData);
-                    console.log('Parsed responsive settings:', responsive);
-                    if (Array.isArray(responsive) && responsive.length > 0) {
-                        // Ensure all boolean values are properly converted
-                        options.responsive = responsive.map(breakpoint => ({
-                            breakpoint: breakpoint.breakpoint,
-                            settings: {
-                                ...breakpoint.settings,
-                                slidesToShow: parseInt(breakpoint.settings.slidesToShow, 1),
-                                slidesToScroll: parseInt(breakpoint.settings.slidesToScroll, 1),
-                                autoplaySpeed: parseInt(breakpoint.settings.autoplaySpeed, 3000),
-                                speed: parseInt(breakpoint.settings.speed, 500)
-                            }
-                        }));
-                        console.log('Processed responsive settings:', options.responsive);
-                    }
+                    options.responsive = JSON.parse(responsiveData);
+                    console.log('Using responsive settings:', options.responsive);
                 }
             } catch (e) {
                 console.error('Error parsing responsive settings:', e);
             }
-        } else {
-            console.log('Responsive mode is disabled for this slider');
         }
 
         // Initialize Slick
         try {
-            console.log('Initializing slider', index, 'with options:', options);
-            jQuery(slider).slick(options);
-            console.log('Slider', index, 'initialized successfully');
+            console.log('Initializing slider with options:', options);
+            const $slider = jQuery(slider);
+            
+            // Destroy if already initialized
+            if ($slider.hasClass('slick-initialized')) {
+                $slider.slick('unslick');
+            }
+            
+            // Initialize with options
+            $slider.slick(options);
+            console.log('Slider initialized successfully');
         } catch (e) {
-            console.error('Error initializing slider', index, ':', e);
+            console.error('Error initializing slider:', e);
         }
     });
 });

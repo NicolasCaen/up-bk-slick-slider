@@ -78,21 +78,14 @@ if ($responsive === 'true' && !empty($slick_attributes['breakpoints'])) {
         $tablet_settings = $slick_attributes['breakpoints']['tablet']['settings'];
         $responsive_array[] = [
             'breakpoint' => 1024,
-            'settings' => [
-                'slidesToShow' => intval($tablet_settings['slidesToShow']),
-                'slidesToScroll' => intval($tablet_settings['slidesToScroll']),
-                'arrows' => filter_var($tablet_settings['arrows'], FILTER_VALIDATE_BOOLEAN),
-                'dots' => filter_var($tablet_settings['dots'], FILTER_VALIDATE_BOOLEAN),
-                'autoplay' => filter_var($tablet_settings['autoplay'], FILTER_VALIDATE_BOOLEAN),
-                'autoplaySpeed' => intval($tablet_settings['autoplaySpeed']),
-                'infinite' => filter_var($tablet_settings['infinite'], FILTER_VALIDATE_BOOLEAN),
-                'speed' => intval($tablet_settings['speed']),
-                'fade' => filter_var($tablet_settings['fade'], FILTER_VALIDATE_BOOLEAN),
-                'centerMode' => filter_var($tablet_settings['centerMode'], FILTER_VALIDATE_BOOLEAN),
-                'adaptiveHeight' => filter_var($tablet_settings['adaptiveHeight'], FILTER_VALIDATE_BOOLEAN),
-                'pauseOnHover' => filter_var($tablet_settings['pauseOnHover'], FILTER_VALIDATE_BOOLEAN),
-                'swipe' => filter_var($tablet_settings['swipe'], FILTER_VALIDATE_BOOLEAN)
-            ]
+            'settings' => array_map(function($value) {
+                if (is_bool($value)) {
+                    return $value;
+                } elseif (is_numeric($value)) {
+                    return intval($value);
+                }
+                return $value;
+            }, $tablet_settings)
         ];
     }
     
@@ -101,25 +94,18 @@ if ($responsive === 'true' && !empty($slick_attributes['breakpoints'])) {
         $mobile_settings = $slick_attributes['breakpoints']['mobile']['settings'];
         $responsive_array[] = [
             'breakpoint' => 480,
-            'settings' => [
-                'slidesToShow' => intval($mobile_settings['slidesToShow']),
-                'slidesToScroll' => intval($mobile_settings['slidesToScroll']),
-                'arrows' => filter_var($mobile_settings['arrows'], FILTER_VALIDATE_BOOLEAN),
-                'dots' => filter_var($mobile_settings['dots'], FILTER_VALIDATE_BOOLEAN),
-                'autoplay' => filter_var($mobile_settings['autoplay'], FILTER_VALIDATE_BOOLEAN),
-                'autoplaySpeed' => intval($mobile_settings['autoplaySpeed']),
-                'infinite' => filter_var($mobile_settings['infinite'], FILTER_VALIDATE_BOOLEAN),
-                'speed' => intval($mobile_settings['speed']),
-                'fade' => filter_var($mobile_settings['fade'], FILTER_VALIDATE_BOOLEAN),
-                'centerMode' => filter_var($mobile_settings['centerMode'], FILTER_VALIDATE_BOOLEAN),
-                'adaptiveHeight' => filter_var($mobile_settings['adaptiveHeight'], FILTER_VALIDATE_BOOLEAN),
-                'pauseOnHover' => filter_var($mobile_settings['pauseOnHover'], FILTER_VALIDATE_BOOLEAN),
-                'swipe' => filter_var($mobile_settings['swipe'], FILTER_VALIDATE_BOOLEAN)
-            ]
+            'settings' => array_map(function($value) {
+                if (is_bool($value)) {
+                    return $value;
+                } elseif (is_numeric($value)) {
+                    return intval($value);
+                }
+                return $value;
+            }, $mobile_settings)
         ];
     }
     
-    $breakpoints = wp_json_encode($responsive_array, JSON_UNESCAPED_SLASHES);
+    $breakpoints = wp_json_encode($responsive_array, JSON_UNESCAPED_SLASHES | JSON_NUMERIC_CHECK);
 }
 ?>
 

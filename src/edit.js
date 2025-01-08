@@ -87,9 +87,20 @@ export default function Edit({ attributes, setAttributes }) {
     };
 
     const updateBreakpointSetting = (device, field, value) => {
-        const newBreakpoints = { ...breakpoints };
+        const newBreakpoints = JSON.parse(JSON.stringify(breakpoints)); // Deep clone
         newBreakpoints[device].settings[field] = value;
-        setAttributes({ breakpoints: newBreakpoints });
+        
+        // Force update with new breakpoints
+        setAttributes({ 
+            breakpoints: newBreakpoints,
+            // Force update by toggling responsive
+            responsive: false 
+        });
+        
+        // Re-enable responsive after a brief delay
+        setTimeout(() => {
+            setAttributes({ responsive: true });
+        }, 0);
     };
 
     return (
