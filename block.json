@@ -25,6 +25,10 @@
             "type": "array",
             "default": []
         },
+        "imageSource": {
+            "type": "string",
+            "default": "gallery"
+        },
         "gap": {
             "type": "number",
             "default": 0

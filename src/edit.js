@@ -14,11 +14,15 @@ import {
     SelectControl,
     Notice,
 } from '@wordpress/components';
+import { useSelect } from '@wordpress/data';
+import { useEffect, useState } from '@wordpress/element';
+import apiFetch from '@wordpress/api-fetch';
 import './editor.scss';
 
 export default function Edit({ attributes, setAttributes }) {
     const {
         slides,
+        imageSource,
         gap,
         fixedHeight,
         slideHeight,
@@ -39,6 +43,36 @@ export default function Edit({ attributes, setAttributes }) {
     } = attributes;
 
     const blockProps = useBlockProps();
+    const [attachments, setAttachments] = useState([]);
+
+    // Récupérer l'ID du post courant
+    const postId = useSelect((select) => {
+        const { getCurrentPostId } = select('core/editor');
+        return getCurrentPostId();
+    }, []);
+
+    // Charger les images attachées au post
+    useEffect(() => {
+        if (postId) {
+            apiFetch({
+                path: `/wp/v2/media?parent=${postId}&per_page=100&media_type=image`,
+            }).then((media) => {
+                const images = media.map(item => ({
+                    id: item.id,
+                    url: item.source_url,
+                    alt: item.alt_text || '',
+                }));
+                setAttachments(images);
+            });
+        }
+    }, [postId]);
+
+    // Mettre à jour les slides quand la source change
+    useEffect(() => {
+        if (imageSource === 'post' && attachments && attachments.length > 0) {
+            setAttributes({ slides: attachments });
+        }
+    }, [imageSource, attachments]);
 
     const onSelectImages = (images) => {
         const newSlides = images.map(image => ({
@@ -53,26 +87,50 @@ export default function Edit({ attributes, setAttributes }) {
         <div {...blockProps}>
             <InspectorControls>
                 <PanelBody title={__('Slider Content', 'up-bk-slick-slider')} initialOpen={true}>
-                    <MediaUploadCheck>
-                        <MediaUpload
-                            onSelect={onSelectImages}
-                            allowedTypes={['image']}
-                            multiple={true}
-                            gallery={true}
-                            value={slides.map(img => img.id)}
-                            render={({ open }) => (
-                                <Button
-                                    onClick={open}
-                                    variant="primary"
-                                    className="editor-post-featured-image__toggle"
-                                >
-                                    {slides.length > 0
-                                        ? __('Edit Gallery', 'up-bk-slick-slider')
-                                        : __('Add Images', 'up-bk-slick-slider')}
-                                </Button>
+                    <SelectControl
+                        label={__('Image Source', 'up-bk-slick-slider')}
+                        value={imageSource}
+                        options={[
+                            { label: __('Custom Gallery', 'up-bk-slick-slider'), value: 'gallery' },
+                            { label: __('Post Images', 'up-bk-slick-slider'), value: 'post' },
+                        ]}
+                        onChange={(value) => setAttributes({ imageSource: value })}
+                    />
+
+                    {imageSource === 'gallery' && (
+                        <MediaUploadCheck>
+                            <MediaUpload
+                                onSelect={onSelectImages}
+                                allowedTypes={['image']}
+                                multiple={true}
+                                gallery={true}
+                                value={slides.map(img => img.id)}
+                                render={({ open }) => (
+                                    <Button
+                                        onClick={open}
+                                        variant="primary"
+                                        className="editor-post-featured-image__toggle"
+                                    >
+                                        {slides.length > 0
+                                            ? __('Edit Gallery', 'up-bk-slick-slider')
+                                            : __('Add Images', 'up-bk-slick-slider')}
+                                    </Button>
+                                )}
+                            />
+                        </MediaUploadCheck>
+                    )}
+
+                    {imageSource === 'post' && (
+                        <>
+                            {attachments && attachments.length > 0 ? (
+                                <p>{__(`Using ${attachments.length} images uploaded to this post`, 'up-bk-slick-slider')}</p>
+                            ) : (
+                                <Notice status="info" isDismissible={false}>
+                                    {__('No images uploaded to this post yet. Upload some images using the media library.', 'up-bk-slick-slider')}
+                                </Notice>
                             )}
-                        />
-                    </MediaUploadCheck>
+                        </>
+                    )}
                 </PanelBody>
 
                 <PanelBody title={__('Slide Dimensions', 'up-bk-slick-slider')} initialOpen={false}>
@@ -157,7 +215,7 @@ export default function Edit({ attributes, setAttributes }) {
                         value={slidesToShow}
                         onChange={(value) => setAttributes({ slidesToShow: value })}
                         min={1}
-                        max={6}
+                        max={8}
                         step={1}
                     />
                     <RangeControl
@@ -165,23 +223,13 @@ export default function Edit({ attributes, setAttributes }) {
                         value={slidesToScroll}
                         onChange={(value) => setAttributes({ slidesToScroll: value })}
                         min={1}
-                        max={6}
+                        max={8}
                         step={1}
                     />
                     <ToggleControl
                         label={__('Fade Effect', 'up-bk-slick-slider')}
                         checked={fade}
-                        onChange={(value) => {
-                            if (value) {
-                                setAttributes({ 
-                                    fade: value,
-                                    slidesToShow: 1,
-                                    slidesToScroll: 1
-                                });
-                            } else {
-                                setAttributes({ fade: value });
-                            }
-                        }}
+                        onChange={(value) => setAttributes({ fade: value })}
                     />
                     <ToggleControl
                         label={__('Center Mode', 'up-bk-slick-slider')}
@@ -207,7 +255,7 @@ export default function Edit({ attributes, setAttributes }) {
             </InspectorControls>
 
             <div className="wp-block-up-bk-slick-slider-editor">
-                {slides.length === 0 ? (
+                {!slides.length ? (
                     <MediaUploadCheck>
                         <MediaUpload
                             onSelect={onSelectImages}
