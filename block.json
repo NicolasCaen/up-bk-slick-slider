@@ -37,6 +37,10 @@
             "type": "string",
             "default": ""
         },
+        "objectFit": {
+            "type": "string",
+            "default": "cover"
+        },
         "autoplay": {
             "type": "boolean",
             "default": true

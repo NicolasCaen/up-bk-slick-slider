@@ -46,9 +46,10 @@ if ($apply_gap) {
     $css_vars[] = sprintf('--gap-size: %dpx', $gap);
 }
 
-// Add height variable if fixed height is enabled
+// Add height and object-fit variables if fixed height is enabled
 if (!empty($slick_attributes['fixedHeight']) && !empty($slick_attributes['slideHeight'])) {
     $css_vars[] = sprintf('--slide-height: %s', $slick_attributes['slideHeight']);
+    $css_vars[] = sprintf('--object-fit: %s', $slick_attributes['objectFit'] ?? 'cover');
 }
 
 // Prepare wrapper attributes

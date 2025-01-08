@@ -11,6 +11,7 @@ import {
     ToggleControl,
     RangeControl,
     TextControl,
+    SelectControl,
     Notice,
 } from '@wordpress/components';
 import './editor.scss';
@@ -21,6 +22,7 @@ export default function Edit({ attributes, setAttributes }) {
         gap,
         fixedHeight,
         slideHeight,
+        objectFit,
         autoplay,
         autoplaySpeed,
         arrows,
@@ -81,13 +83,25 @@ export default function Edit({ attributes, setAttributes }) {
                         onChange={(value) => setAttributes({ fixedHeight: value })}
                     />
                     {fixedHeight && (
-                        <TextControl
-                            label={__('Slide Height', 'up-bk-slick-slider')}
-                            help={__('Enter a value with unit (e.g., 400px, 50vh, etc.)', 'up-bk-slick-slider')}
-                            value={slideHeight}
-                            onChange={(value) => setAttributes({ slideHeight: value })}
-                            placeholder="400px"
-                        />
+                        <>
+                            <TextControl
+                                label={__('Slide Height', 'up-bk-slick-slider')}
+                                help={__('Enter a value with unit (e.g., 400px, 50vh, etc.)', 'up-bk-slick-slider')}
+                                value={slideHeight}
+                                onChange={(value) => setAttributes({ slideHeight: value })}
+                                placeholder="400px"
+                            />
+                            <SelectControl
+                                label={__('Image Fit', 'up-bk-slick-slider')}
+                                value={objectFit}
+                                options={[
+                                    { label: __('Cover - Fill the space', 'up-bk-slick-slider'), value: 'cover' },
+                                    { label: __('Contain - Show entire image', 'up-bk-slick-slider'), value: 'contain' },
+                                ]}
+                                onChange={(value) => setAttributes({ objectFit: value })}
+                                help={__('Choose how the image should fit within the slide', 'up-bk-slick-slider')}
+                            />
+                        </>
                     )}
                     <RangeControl
                         label={__('Gap between slides', 'up-bk-slick-slider')}
