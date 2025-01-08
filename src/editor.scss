@@ -1,0 +1,58 @@
+.wp-block-up-bk-slick-slider {
+    .slick-slider-wrapper {
+        position: relative;
+        padding: 20px;
+        border: 1px dashed #ccc;
+        text-align: center;
+
+        .components-button.is-primary {
+            display: inline-block;
+            margin: 20px auto;
+        }
+    }
+
+    .slick-slider {
+        margin: 0 auto;
+        max-width: 100%;
+
+        .slick-slide {
+            padding: 0 10px;
+            
+            img {
+                max-width: 100%;
+                height: auto;
+                margin: 0 auto;
+            }
+        }
+    }
+
+    // Slick navigation styles
+    .slick-prev,
+    .slick-next {
+        z-index: 1;
+        width: 40px;
+        height: 40px;
+
+        &:before {
+            font-size: 40px;
+        }
+    }
+
+    .slick-prev {
+        left: 10px;
+    }
+
+    .slick-next {
+        right: 10px;
+    }
+
+    .slick-dots {
+        bottom: -30px;
+
+        li {
+            button:before {
+                font-size: 12px;
+            }
+        }
+    }
+}

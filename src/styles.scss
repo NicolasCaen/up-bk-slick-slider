@@ -1,0 +1,141 @@
+.wp-block-up-bk-slick-slider {
+    margin-bottom: 40px;
+
+    .slick-slider {
+        position: relative;
+        display: block;
+        margin: 0;
+        padding: 0;
+
+        .slick-list {
+            overflow: hidden;
+            margin: 0;
+            padding: 0;
+        }
+
+        .slick-track {
+            display: flex;
+            align-items: center;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .slick-slide {
+            padding: 0 10px;
+            box-sizing: border-box;
+
+            > div {
+                line-height: 0; // Supprime l'espace sous les images
+            }
+
+            img.slick-slide-image {
+                display: block;
+                width: 100%;
+                height: auto;
+                object-fit: cover;
+            }
+        }
+
+        // Navigation arrows
+        .slick-prev,
+        .slick-next {
+            z-index: 1;
+            width: 40px;
+            height: 40px;
+            transition: opacity 0.3s ease;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 50%;
+
+            &:before {
+                font-size: 24px;
+                color: #fff;
+                opacity: 1;
+            }
+
+            &:hover, &:focus {
+                background: rgba(0, 0, 0, 0.8);
+                opacity: 1;
+            }
+
+            &:focus {
+                outline: 2px solid #007cba;
+                outline-offset: 2px;
+            }
+        }
+
+        .slick-prev {
+            left: 10px;
+        }
+
+        .slick-next {
+            right: 10px;
+        }
+
+        // Navigation dots
+        .slick-dots {
+            bottom: -30px;
+            
+            li {
+                margin: 0 4px;
+
+                button {
+                    &:before {
+                        font-size: 12px;
+                        opacity: 0.5;
+                        transition: opacity 0.3s ease;
+                    }
+
+                    &:focus {
+                        outline: 2px solid #007cba;
+                        outline-offset: 2px;
+                    }
+                }
+
+                &.slick-active button:before {
+                    opacity: 1;
+                }
+            }
+        }
+    }
+
+    // Accessibility
+    .slick-slide {
+        &:not(.slick-current) {
+            [tabindex="-1"] {
+                visibility: hidden;
+            }
+        }
+
+        &.slick-current {
+            [tabindex="0"] {
+                outline: none;
+
+                &:focus {
+                    outline: 2px solid #007cba;
+                    outline-offset: 2px;
+                }
+            }
+        }
+    }
+
+    // Responsive styles
+    @media screen and (max-width: 768px) {
+        .slick-prev,
+        .slick-next {
+            width: 30px;
+            height: 30px;
+
+            &:before {
+                font-size: 20px;
+            }
+        }
+
+        .slick-dots {
+            bottom: -25px;
+
+            li button:before {
+                font-size: 10px;
+            }
+        }
+    }
+}

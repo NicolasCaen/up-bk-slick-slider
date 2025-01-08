@@ -1,1 +1,0 @@
-# up-bk-slick-slider

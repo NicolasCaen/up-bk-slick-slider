@@ -1,0 +1,83 @@
+{
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "apiVersion": 3,
+    "name": "up-bk/slick-slider",
+    "version": "0.1.0",
+    "title": "UP Slick Slider",
+    "category": "media",
+    "icon": "slides",
+    "description": "Create beautiful sliders using Slick JS",
+    "supports": {
+        "html": false,
+        "align": ["wide", "full"]
+    },
+    "attributes": {
+        "slides": {
+            "type": "array",
+            "default": []
+        },
+        "autoplay": {
+            "type": "boolean",
+            "default": true
+        },
+        "autoplaySpeed": {
+            "type": "number",
+            "default": 3000
+        },
+        "arrows": {
+            "type": "boolean",
+            "default": true
+        },
+        "dots": {
+            "type": "boolean",
+            "default": true
+        },
+        "infinite": {
+            "type": "boolean",
+            "default": true
+        },
+        "speed": {
+            "type": "number",
+            "default": 500
+        },
+        "slidesToShow": {
+            "type": "number",
+            "default": 1
+        },
+        "slidesToScroll": {
+            "type": "number",
+            "default": 1
+        },
+        "fade": {
+            "type": "boolean",
+            "default": false
+        },
+        "centerMode": {
+            "type": "boolean",
+            "default": false
+        },
+        "adaptiveHeight": {
+            "type": "boolean",
+            "default": false
+        },
+        "pauseOnHover": {
+            "type": "boolean",
+            "default": true
+        },
+        "swipe": {
+            "type": "boolean",
+            "default": true
+        }
+    },
+    "textdomain": "up-bk-slick-slider",
+    "editorScript": "file:./build/index.js",
+    "editorStyle": "file:./build/index.css",
+    "style": "file:./build/style-index.css",
+    "render": "file:./src/render.php",
+    "viewScript": "file:./build/view.js",
+    "dependencies": {
+        "wp-blocks": "wp-blocks",
+        "wp-element": "wp-element",
+        "wp-i18n": "wp-i18n"
+    }
+}
