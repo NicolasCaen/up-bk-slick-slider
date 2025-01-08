@@ -10,6 +10,7 @@ import {
     Button,
     ToggleControl,
     RangeControl,
+    TextControl,
     Notice,
 } from '@wordpress/components';
 import './editor.scss';
@@ -17,6 +18,9 @@ import './editor.scss';
 export default function Edit({ attributes, setAttributes }) {
     const {
         slides,
+        gap,
+        fixedHeight,
+        slideHeight,
         autoplay,
         autoplaySpeed,
         arrows,
@@ -32,9 +36,7 @@ export default function Edit({ attributes, setAttributes }) {
         swipe,
     } = attributes;
 
-    const blockProps = useBlockProps({
-        className: 'wp-block-up-bk-slick-slider'
-    });
+    const blockProps = useBlockProps();
 
     const onSelectImages = (images) => {
         const newSlides = images.map(image => ({
@@ -48,7 +50,56 @@ export default function Edit({ attributes, setAttributes }) {
     return (
         <div {...blockProps}>
             <InspectorControls>
-                <PanelBody title={__('Slider Settings', 'up-bk-slick-slider')}>
+                <PanelBody title={__('Slider Content', 'up-bk-slick-slider')} initialOpen={true}>
+                    <MediaUploadCheck>
+                        <MediaUpload
+                            onSelect={onSelectImages}
+                            allowedTypes={['image']}
+                            multiple={true}
+                            gallery={true}
+                            value={slides.map(img => img.id)}
+                            render={({ open }) => (
+                                <Button
+                                    onClick={open}
+                                    variant="primary"
+                                    className="editor-post-featured-image__toggle"
+                                >
+                                    {slides.length > 0
+                                        ? __('Edit Gallery', 'up-bk-slick-slider')
+                                        : __('Add Images', 'up-bk-slick-slider')}
+                                </Button>
+                            )}
+                        />
+                    </MediaUploadCheck>
+                </PanelBody>
+
+                <PanelBody title={__('Slide Dimensions', 'up-bk-slick-slider')} initialOpen={false}>
+                    <ToggleControl
+                        label={__('Fixed Height', 'up-bk-slick-slider')}
+                        help={__('Enable to set a fixed height for all slides', 'up-bk-slick-slider')}
+                        checked={fixedHeight}
+                        onChange={(value) => setAttributes({ fixedHeight: value })}
+                    />
+                    {fixedHeight && (
+                        <TextControl
+                            label={__('Slide Height', 'up-bk-slick-slider')}
+                            help={__('Enter a value with unit (e.g., 400px, 50vh, etc.)', 'up-bk-slick-slider')}
+                            value={slideHeight}
+                            onChange={(value) => setAttributes({ slideHeight: value })}
+                            placeholder="400px"
+                        />
+                    )}
+                    <RangeControl
+                        label={__('Gap between slides', 'up-bk-slick-slider')}
+                        value={gap}
+                        onChange={(value) => setAttributes({ gap: value })}
+                        min={0}
+                        max={100}
+                        step={1}
+                    />
+                </PanelBody>
+
+                <PanelBody title={__('Slider Settings', 'up-bk-slick-slider')} initialOpen={false}>
                     <ToggleControl
                         label={__('Autoplay', 'up-bk-slick-slider')}
                         checked={autoplay}
@@ -87,6 +138,22 @@ export default function Edit({ attributes, setAttributes }) {
                         max={3000}
                         step={100}
                     />
+                    <RangeControl
+                        label={__('Slides to Show', 'up-bk-slick-slider')}
+                        value={slidesToShow}
+                        onChange={(value) => setAttributes({ slidesToShow: value })}
+                        min={1}
+                        max={6}
+                        step={1}
+                    />
+                    <RangeControl
+                        label={__('Slides to Scroll', 'up-bk-slick-slider')}
+                        value={slidesToScroll}
+                        onChange={(value) => setAttributes({ slidesToScroll: value })}
+                        min={1}
+                        max={6}
+                        step={1}
+                    />
                     <ToggleControl
                         label={__('Fade Effect', 'up-bk-slick-slider')}
                         checked={fade}
@@ -102,34 +169,6 @@ export default function Edit({ attributes, setAttributes }) {
                             }
                         }}
                     />
-                    {fade && (
-                        <Notice status="info" isDismissible={false}>
-                            {__('Fade effect only works with one slide at a time.', 'up-bk-slick-slider')}
-                        </Notice>
-                    )}
-                    {!fade && (
-                        <>
-                            <RangeControl
-                                label={__('Slides to Show', 'up-bk-slick-slider')}
-                                value={slidesToShow}
-                                onChange={(value) => {
-                                    setAttributes({ 
-                                        slidesToShow: value,
-                                        slidesToScroll: Math.min(value, slidesToScroll)
-                                    });
-                                }}
-                                min={1}
-                                max={5}
-                            />
-                            <RangeControl
-                                label={__('Slides to Scroll', 'up-bk-slick-slider')}
-                                value={slidesToScroll}
-                                onChange={(value) => setAttributes({ slidesToScroll: value })}
-                                min={1}
-                                max={Math.min(5, slidesToShow)}
-                            />
-                        </>
-                    )}
                     <ToggleControl
                         label={__('Center Mode', 'up-bk-slick-slider')}
                         checked={centerMode}
@@ -153,37 +192,55 @@ export default function Edit({ attributes, setAttributes }) {
                 </PanelBody>
             </InspectorControls>
 
-            <div className="slick-slider-wrapper">
-                {slides && slides.length > 0 ? (
-                    <div className="slick-slider">
-                        {slides.map((slide, index) => (
-                            <div key={index} className="slick-slide">
-                                <img
-                                    src={slide.url}
-                                    alt={slide.alt}
-                                    className="slick-slide-image"
-                                />
-                            </div>
-                        ))}
-                    </div>
-                ) : (
+            <div className="wp-block-up-bk-slick-slider-editor">
+                {slides.length === 0 ? (
                     <MediaUploadCheck>
                         <MediaUpload
                             onSelect={onSelectImages}
                             allowedTypes={['image']}
-                            multiple
-                            gallery
-                            value={slides ? slides.map(slide => slide.id) : []}
+                            multiple={true}
+                            gallery={true}
+                            value={[]}
                             render={({ open }) => (
                                 <Button
                                     onClick={open}
-                                    className="components-button is-primary"
+                                    variant="primary"
+                                    className="editor-post-featured-image__toggle"
                                 >
                                     {__('Add Images', 'up-bk-slick-slider')}
                                 </Button>
                             )}
                         />
                     </MediaUploadCheck>
+                ) : (
+                    <div className="slider-preview">
+                        {slides.map((slide, index) => (
+                            <div key={index} className="slider-preview-item">
+                                <img
+                                    src={slide.url}
+                                    alt={slide.alt}
+                                />
+                            </div>
+                        ))}
+                        <MediaUploadCheck>
+                            <MediaUpload
+                                onSelect={onSelectImages}
+                                allowedTypes={['image']}
+                                multiple={true}
+                                gallery={true}
+                                value={slides.map(img => img.id)}
+                                render={({ open }) => (
+                                    <Button
+                                        onClick={open}
+                                        variant="secondary"
+                                        className="edit-gallery-button"
+                                    >
+                                        {__('Edit Gallery', 'up-bk-slick-slider')}
+                                    </Button>
+                                )}
+                            />
+                        </MediaUploadCheck>
+                    </div>
                 )}
             </div>
         </div>
