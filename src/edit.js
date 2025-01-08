@@ -47,6 +47,9 @@ export default function Edit({ attributes, setAttributes }) {
 
     const blockProps = useBlockProps();
     const [attachments, setAttachments] = useState([]);
+    const [tabletPanelOpen, setTabletPanelOpen] = useState(false);
+    const [mobilePanelOpen, setMobilePanelOpen] = useState(false);
+    const [forceUpdate, setForceUpdate] = useState(0);
 
     // Récupérer l'ID du post courant
     const postId = useSelect((select) => {
@@ -89,18 +92,7 @@ export default function Edit({ attributes, setAttributes }) {
     const updateBreakpointSetting = (device, field, value) => {
         const newBreakpoints = JSON.parse(JSON.stringify(breakpoints)); // Deep clone
         newBreakpoints[device].settings[field] = value;
-        
-        // Force update with new breakpoints
-        setAttributes({ 
-            breakpoints: newBreakpoints,
-            // Force update by toggling responsive
-            responsive: false 
-        });
-        
-        // Re-enable responsive after a brief delay
-        setTimeout(() => {
-            setAttributes({ responsive: true });
-        }, 0);
+        setAttributes({ breakpoints: newBreakpoints });
     };
 
     return (
@@ -282,7 +274,11 @@ export default function Edit({ attributes, setAttributes }) {
 
                     {responsive && (
                         <>
-                            <PanelBody title={__('Tablet Settings (≤ 1024px)', 'up-bk-slick-slider')} initialOpen={false}>
+                            <PanelBody 
+                                title={__('Tablet Settings (≤ 1024px)', 'up-bk-slick-slider')} 
+                                initialOpen={tabletPanelOpen}
+                                onToggle={() => setTabletPanelOpen(!tabletPanelOpen)}
+                            >
                                 <RangeControl
                                     label={__('Slides to Show', 'up-bk-slick-slider')}
                                     value={breakpoints.tablet.settings.slidesToShow}
@@ -362,7 +358,11 @@ export default function Edit({ attributes, setAttributes }) {
                                 />
                             </PanelBody>
 
-                            <PanelBody title={__('Mobile Settings (≤ 480px)', 'up-bk-slick-slider')} initialOpen={false}>
+                            <PanelBody 
+                                title={__('Mobile Settings (≤ 480px)', 'up-bk-slick-slider')} 
+                                initialOpen={mobilePanelOpen}
+                                onToggle={() => setMobilePanelOpen(!mobilePanelOpen)}
+                            >
                                 <RangeControl
                                     label={__('Slides to Show', 'up-bk-slick-slider')}
                                     value={breakpoints.mobile.settings.slidesToShow}
