@@ -4,7 +4,7 @@
  * Description:       A WordPress block for creating beautiful sliders using Slick JS
  * Requires at least: 6.1
  * Requires PHP:      7.4
- * Version:          0.1.0
+ * Version:          1.1.0
  * Author:           UP
  * License:          GPL-2.0-or-later
  * License URI:      https://www.gnu.org/licenses/gpl-2.0.html

@@ -3,7 +3,7 @@ Contributors: upagency
 Tags: slider, slick, carousel, gutenberg, block
 Requires at least: 6.1
 Tested up to: 6.4
-Stable tag: 1.0.0
+Stable tag: 1.1.0
 Requires PHP: 7.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -47,10 +47,18 @@ Yes, you can customize various settings in the block sidebar, including:
 
 == Changelog ==
 
+= 1.1.0 =
+* Added view.js for frontend slider initialization
+* Improved block registration with block.json
+* Fixed build process and file structure
+
 = 1.0.0 =
 * Initial release
 
 == Upgrade Notice ==
+
+= 1.1.0 =
+This version includes improvements to the build process and fixes issues with the slider initialization on the frontend.
 
 = 1.0.0 =
 Initial release of the plugin.
