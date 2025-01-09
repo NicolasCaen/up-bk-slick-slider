@@ -9,17 +9,19 @@
         bottom: 0;
         pointer-events: none;
         z-index: 1;
+        padding: 1em;
 
         &__arrow {
             position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
             cursor: pointer;
             pointer-events: auto;
             display: flex;
             align-items: center;
             justify-content: center;
             color: currentColor;
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 0.5em;
+            border-radius: 50%;
 
             svg {
                 width: 2em;
@@ -37,22 +39,83 @@
         }
     }
 
-    &[data-arrow-position="inside"] {
+    // Position Center
+    &[data-arrow-position="center"] {
         .wp-block-up-bk-slick-slider__nav__arrow {
-            background-color: rgba(255, 255, 255, 0.8);
-            padding: 0.5em;
-            border-radius: 50%;
-        }
-    }
+            top: 50%;
+            transform: translateY(-50%);
 
-    &[data-arrow-position="outside"] {
-        .wp-block-up-bk-slick-slider__nav__arrow {
             &--prev {
-                left: -3em;
+                left: 1em;
             }
 
             &--next {
-                right: -3em;
+                right: 1em;
+            }
+        }
+    }
+
+    // Position Top Left
+    &[data-arrow-position="top-left"] {
+        .wp-block-up-bk-slick-slider__nav__arrow {
+            top: 1em;
+            left: 1em;
+
+            &--next {
+                left: 4em;
+            }
+        }
+    }
+
+    // Position Top Right
+    &[data-arrow-position="top-right"] {
+        .wp-block-up-bk-slick-slider__nav__arrow {
+            top: 1em;
+            right: 1em;
+
+            &--prev {
+                right: 4em;
+            }
+        }
+    }
+
+    // Position Bottom Left
+    &[data-arrow-position="bottom-left"] {
+        .wp-block-up-bk-slick-slider__nav__arrow {
+            bottom: 1em;
+            left: 1em;
+
+            &--next {
+                left: 4em;
+            }
+        }
+    }
+
+    // Position Bottom Right
+    &[data-arrow-position="bottom-right"] {
+        .wp-block-up-bk-slick-slider__nav__arrow {
+            bottom: 1em;
+            right: 1em;
+
+            &--prev {
+                right: 4em;
+            }
+        }
+    }
+
+    // Position Bottom Center
+    &[data-arrow-position="bottom-center"] {
+        .wp-block-up-bk-slick-slider__nav__arrow {
+            bottom: 1em;
+
+            &--prev {
+                left: 50%;
+                transform: translateX(-150%);
+            }
+
+            &--next {
+                right: 50%;
+                transform: translateX(150%);
             }
         }
     }

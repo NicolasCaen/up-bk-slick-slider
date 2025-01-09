@@ -63,7 +63,7 @@
         },
         "arrowPosition": {
             "type": "string",
-            "default": "outside"
+            "default": "center"
         },
         "dots": {
             "type": "boolean",

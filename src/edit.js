@@ -105,8 +105,12 @@ export default function Edit({ attributes, setAttributes }) {
 
     // Définition des positions de flèches disponibles
     const arrowPositions = [
-        { label: __('Outside', 'up-bk-slick-slider'), value: 'outside' },
-        { label: __('Inside', 'up-bk-slick-slider'), value: 'inside' },
+        { label: __('Center', 'up-bk-slick-slider'), value: 'center' },
+        { label: __('Top Left', 'up-bk-slick-slider'), value: 'top-left' },
+        { label: __('Top Right', 'up-bk-slick-slider'), value: 'top-right' },
+        { label: __('Bottom Left', 'up-bk-slick-slider'), value: 'bottom-left' },
+        { label: __('Bottom Right', 'up-bk-slick-slider'), value: 'bottom-right' },
+        { label: __('Bottom Center', 'up-bk-slick-slider'), value: 'bottom-center' },
     ];
 
     return (
@@ -238,9 +242,11 @@ export default function Edit({ attributes, setAttributes }) {
                         />
                         <SelectControl
                             label={__('Arrow Position', 'up-bk-slick-slider')}
-                            value={arrowPosition}
+                            value={arrowPosition || 'center'}
                             options={arrowPositions}
-                            onChange={(value) => setAttributes({ arrowPosition: value })}
+                            onChange={(value) => {
+                                setAttributes({ arrowPosition: value });
+                            }}
                         />
                     </PanelBody>
                 )}

@@ -60,6 +60,14 @@ registerBlockType('up-bk/slick-slider', {
             type: 'boolean',
             default: true
         },
+        arrowType: {
+            type: 'string',
+            default: 'type1'
+        },
+        arrowPosition: {
+            type: 'string',
+            default: 'center'
+        },
         dots: {
             type: 'boolean',
             default: true
