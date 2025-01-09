@@ -45,7 +45,11 @@ export default function Edit({ attributes, setAttributes }) {
         responsive,
         arrowType,
         arrowPosition,
-        variableWidth
+        variableWidth,
+        navIconSize,
+        navGap,
+        navRadius,
+        navPadding
     } = attributes;
 
     const blockProps = useBlockProps();
@@ -544,27 +548,75 @@ export default function Edit({ attributes, setAttributes }) {
                         </>
                     )}
                 </PanelBody>
-                {arrows && (
-                    <PanelBody 
-                        title={__('Navigation', 'up-bk-slick-slider')}
-                        initialOpen={false}
-                    >
-                        <SelectControl
-                            label={__('Arrow Style', 'up-bk-slick-slider')}
-                            value={arrowType}
-                            options={arrowTypes}
-                            onChange={(value) => setAttributes({ arrowType: value })}
-                        />
-                        <SelectControl
-                            label={__('Arrow Position', 'up-bk-slick-slider')}
-                            value={arrowPosition || 'center'}
-                            options={arrowPositions}
-                            onChange={(value) => {
-                                setAttributes({ arrowPosition: value });
-                            }}
-                        />
-                    </PanelBody>
-                )}
+                <PanelBody 
+                    title={__('Navigation', 'up-bk-slick-slider')}
+                    initialOpen={false}
+                >
+                    <ToggleControl
+                        label={__('Show arrows', 'up-bk-slick-slider')}
+                        checked={arrows}
+                        onChange={(value) => setAttributes({ arrows: value })}
+                    />
+                    {arrows && (
+                        <>
+                            <SelectControl
+                                label={__('Arrow Style', 'up-bk-slick-slider')}
+                                value={arrowType}
+                                options={arrowTypes}
+                                onChange={(value) => setAttributes({ arrowType: value })}
+                            />
+                            <SelectControl
+                                label={__('Arrow Position', 'up-bk-slick-slider')}
+                                value={arrowPosition || 'center'}
+                                options={arrowPositions}
+                                onChange={(value) => {
+                                    setAttributes({ arrowPosition: value });
+                                }}
+                            />
+                            <TextControl
+                                label={__('Icon Size', 'up-bk-slick-slider')}
+                                value={navIconSize}
+                                onChange={(value) => {
+                                    // Ajout automatique de 'px' si aucune unité n'est spécifiée
+                                    const size = /\d+$/.test(value) ? value + 'px' : value;
+                                    setAttributes({ navIconSize: size });
+                                }}
+                                help={__('Add unit (px, em, rem) or it will default to px', 'up-bk-slick-slider')}
+                            />
+                            <RangeControl
+                                label={__('Gap between arrows (em)', 'up-bk-slick-slider')}
+                                value={navGap}
+                                onChange={(value) => setAttributes({ navGap: value })}
+                                min={0}
+                                max={5}
+                                step={0.1}
+                            />
+                            <TextControl
+                                label={__('Border Radius', 'up-bk-slick-slider')}
+                                value={navRadius}
+                                onChange={(value) => {
+                                    // Ajout automatique de 'px' si aucune unité n'est spécifiée
+                                    const radius = /\d+$/.test(value) ? value + 'px' : value;
+                                    setAttributes({ navRadius: radius });
+                                }}
+                                help={__('Add unit (px, %, em) or it will default to px', 'up-bk-slick-slider')}
+                            />
+                            <RangeControl
+                                label={__('Padding (em)', 'up-bk-slick-slider')}
+                                value={navPadding}
+                                onChange={(value) => setAttributes({ navPadding: value })}
+                                min={0}
+                                max={3}
+                                step={0.1}
+                            />
+                        </>
+                    )}
+                    <ToggleControl
+                        label={__('Show dots', 'up-bk-slick-slider')}
+                        checked={dots}
+                        onChange={(value) => setAttributes({ dots: value })}
+                    />
+                </PanelBody>
             </InspectorControls>
 
             <div className="wp-block-up-bk-slick-slider-editor">

@@ -66,11 +66,11 @@ registerBlockType('up-bk/slick-slider', {
         },
         arrowPosition: {
             type: 'string',
-            default: 'center'
+            default: 'sides'
         },
         dots: {
             type: 'boolean',
-            default: true
+            default: false
         },
         infinite: {
             type: 'boolean',
@@ -162,6 +162,30 @@ registerBlockType('up-bk/slick-slider', {
                     }
                 }
             }
+        },
+        responsiveEnabled: {
+            type: 'boolean',
+            default: false
+        },
+        responsive: {
+            type: 'array',
+            default: []
+        },
+        navIconSize: {
+            type: 'string',
+            default: '24px'
+        },
+        navGap: {
+            type: 'number',
+            default: 1
+        },
+        navRadius: {
+            type: 'string',
+            default: '50%'
+        },
+        navPadding: {
+            type: 'number',
+            default: 0.5
         }
     },
     edit: Edit,

@@ -157,6 +157,18 @@
                     }
                 }
             }
+        },
+        "navIconSize": {
+            "type": "string"
+        },
+        "navGap": {
+            "type": "number"
+        },
+        "navRadius": {
+            "type": "string"
+        },
+        "navPadding": {
+            "type": "number"
         }
     },
     "textdomain": "up-bk-slick-slider",
