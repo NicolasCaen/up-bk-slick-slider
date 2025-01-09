@@ -93,7 +93,7 @@ Ce projet est sous licence GPL v2 ou ultérieure - voir le fichier [LICENSE](LIC
 
 - Construit avec [WordPress Scripts](https://developer.wordpress.org/block-editor/reference-guides/packages/packages-scripts/)
 - Fonctionnalité de diaporama propulsée par [Slick Carousel](https://kenwheeler.github.io/slick/)
-- Créé par [Votre Nom/Société]
+- Créé par [GEHIN Nicolas]
 
 ## Support
 

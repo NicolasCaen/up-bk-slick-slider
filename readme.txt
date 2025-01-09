@@ -1,9 +1,9 @@
 === UP BK Slick Slider ===
-Contributors: UP
+Contributors: GEHIN Nicolas
 Tags: block, slider, slick
 Requires at least: 6.1
 Tested up to: 6.4
-Stable tag: 1.3
+Stable tag: 1.4
 Requires PHP: 7.0
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -12,16 +12,17 @@ A WordPress block for creating beautiful sliders using Slick JS.
 
 == Description ==
 
-This plugin adds a new block to the WordPress editor that allows you to create beautiful and responsive sliders using the Slick JS library.
+This plugin adds a Gutenberg block that allows you to create beautiful and responsive sliders using the Slick JS library.
 
 Features:
-
 * Easy-to-use interface in the Gutenberg editor
 * Multiple slides support
 * Customizable settings (autoplay, speed, arrows, dots, etc.)
-* Responsive design
+* Responsive design with breakpoint controls
 * Support for fixed height slides
 * Gap control between slides
+* Multiple arrow positions and styles
+* Dynamic visibility control for arrows and dots
 
 == Installation ==
 
@@ -31,27 +32,38 @@ Features:
 
 == Frequently Asked Questions ==
 
-= How do I add slides to the slider? =
-
-Simply click the "Add Images" button in the block editor to upload or select images from your media library.
-
-= Can I customize the slider settings? =
+= What settings can I customize? =
 
 Yes, you can customize various settings in the block sidebar, including:
 * Autoplay and autoplay speed
-* Navigation arrows and dots
+* Navigation arrows and dots visibility
+* Arrow position and style
 * Slide transition effects
 * Number of slides to show
 * Gap between slides
 * Fixed height option
+* Object-fit behavior
+* Responsive breakpoint settings
 
 == Changelog ==
+
+= 1.4 =
+* Added: Responsive breakpoints support with customizable settings for different screen sizes
+* Added: Dynamic data attributes for controlling slider behavior
+* Added: Arrow position and style customization options
+* Added: Improved gap handling with CSS variables
+* Added: Better object-fit control for images
+* Changed: Moved slider styles from inline to SCSS file for better organization
+* Changed: Improved responsive settings handling with breakpoints
+* Fixed: Arrow visibility issues in responsive mode
+* Fixed: Gap calculation in slider items
+* Fixed: Object-fit handling across different screen sizes
+* Fixed: File structure organization (moved files from build to src)
 
 = 1.3 =
 * Amélioration de la gestion responsive des slides
 * Correction des gaps entre les slides
-* Ajustement dynamique des hauteurs et de l'object-fit en fonction de la taille d'écran
-* Optimisation des styles pour une meilleure compatibilité mobile
+* Ajustement dynamique des hauteurs et de l'object-fit en fonction de la taille de l'écran
 
 = 1.2.0 =
 * Amélioration : Gestion améliorée des paramètres responsifs
@@ -67,6 +79,9 @@ Yes, you can customize various settings in the block sidebar, including:
 * Initial release
 
 == Upgrade Notice ==
+
+= 1.4 =
+This version includes significant improvements to responsive controls, arrow and dot visibility management, and better styling organization. Update for better control over your sliders across different screen sizes.
 
 = 1.3 =
 This version includes improvements to the responsive management of slides, correction of gaps between slides, and dynamic adjustment of heights and object-fit based on screen size.

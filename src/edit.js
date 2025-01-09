@@ -116,7 +116,7 @@ export default function Edit({ attributes, setAttributes }) {
     return (
         <div {...blockProps}>
             <InspectorControls>
-                <PanelBody title={__('Slider Content', 'up-bk-slick-slider')} initialOpen={true}>
+                <PanelBody title={__('Sources', 'up-bk-slick-slider')} initialOpen={true}>
                     <SelectControl
                         label={__('Image Source', 'up-bk-slick-slider')}
                         value={imageSource}
@@ -192,7 +192,7 @@ export default function Edit({ attributes, setAttributes }) {
                         max={3000}
                         step={100}
                     />
-                                        <ToggleControl
+                    <ToggleControl
                         label={__('Infinite Loop', 'up-bk-slick-slider')}
                         checked={infinite}
                         onChange={(value) => setAttributes({ infinite: value })}
