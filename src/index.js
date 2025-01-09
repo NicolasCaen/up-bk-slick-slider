@@ -96,6 +96,10 @@ registerBlockType('up-bk/slick-slider', {
             type: 'boolean',
             default: false
         },
+        variableWidth: {
+            type: 'boolean',
+            default: false
+        },
         adaptiveHeight: {
             type: 'boolean',
             default: false

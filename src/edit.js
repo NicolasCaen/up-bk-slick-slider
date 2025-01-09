@@ -44,7 +44,8 @@ export default function Edit({ attributes, setAttributes }) {
         breakpoints,
         responsive,
         arrowType,
-        arrowPosition
+        arrowPosition,
+        variableWidth
     } = attributes;
 
     const blockProps = useBlockProps();
@@ -163,11 +164,7 @@ export default function Edit({ attributes, setAttributes }) {
                     )}
                 </PanelBody>
 
-       
-
                 <PanelBody title={__('Slider Settings', 'up-bk-slick-slider')} initialOpen={false}>
-        
-
                     <ToggleControl
                         label={__('Autoplay', 'up-bk-slick-slider')}
                         checked={autoplay}
@@ -218,6 +215,11 @@ export default function Edit({ attributes, setAttributes }) {
                         onChange={(value) => setAttributes({ centerMode: value })}
                     />
                     <ToggleControl
+                        label={__('Variable Width', 'up-bk-slick-slider')}
+                        checked={variableWidth}
+                        onChange={(value) => setAttributes({ variableWidth: value })}
+                    />
+                    <ToggleControl
                         label={__('Adaptive Height', 'up-bk-slick-slider')}
                         checked={adaptiveHeight}
                         onChange={(value) => setAttributes({ adaptiveHeight: value })}
@@ -234,10 +236,7 @@ export default function Edit({ attributes, setAttributes }) {
                     />
                 </PanelBody>
 
-
-
                 <PanelBody title={__('Advanced Settings', 'up-bk-slick-slider')} initialOpen={false}>
-
                     <RangeControl
                         label={__('Slides to Show', 'up-bk-slick-slider')}
                         value={slidesToShow}
@@ -415,6 +414,11 @@ export default function Edit({ attributes, setAttributes }) {
                                     checked={breakpoints.tablet.settings.swipe}
                                     onChange={(value) => updateBreakpointSetting('tablet', 'swipe', value)}
                                 />
+                                <ToggleControl
+                                    label={__('Variable Width', 'up-bk-slick-slider')}
+                                    checked={breakpoints.tablet.settings.variableWidth}
+                                    onChange={(value) => updateBreakpointSetting('tablet', 'variableWidth', value)}
+                                />
                             </PanelBody>
 
                             <PanelBody 
@@ -530,6 +534,11 @@ export default function Edit({ attributes, setAttributes }) {
                                     label={__('Enable Swipe', 'up-bk-slick-slider')}
                                     checked={breakpoints.mobile.settings.swipe}
                                     onChange={(value) => updateBreakpointSetting('mobile', 'swipe', value)}
+                                />
+                                <ToggleControl
+                                    label={__('Variable Width', 'up-bk-slick-slider')}
+                                    checked={breakpoints.mobile.settings.variableWidth}
+                                    onChange={(value) => updateBreakpointSetting('mobile', 'variableWidth', value)}
                                 />
                             </PanelBody>
                         </>
