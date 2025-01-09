@@ -104,18 +104,22 @@ $right_arrow = apply_filters('bk_slider_arrow_right_' . $arrow_type, $right_arro
     <div class="wp-block-up-bk-slick-slider__nav">
         <div class="wp-block-up-bk-slick-slider__nav__arrow wp-block-up-bk-slick-slider__nav__arrow--prev">
             <?php echo $left_arrow; ?>
+            <span class="screen-reader-text"><?php echo esc_html__('Previous slide', 'up-bk-slick-slider'); ?></span>
         </div>
         <div class="wp-block-up-bk-slick-slider__nav__arrow wp-block-up-bk-slick-slider__nav__arrow--next">
             <?php echo $right_arrow; ?>
+            <span class="screen-reader-text"><?php echo esc_html__('Next slide', 'up-bk-slick-slider'); ?></span>
         </div>
     </div>
     <?php endif; ?>
     
     <div class="slick-slider" 
+        role="region"
+        aria-label="<?php echo esc_attr__('Image Slider', 'up-bk-slick-slider'); ?>"
         data-slick='<?php echo wp_json_encode($slick_options); ?>'
         style="<?php echo $style_string; ?>">
         <?php foreach ($slides as $slide) : ?>
-            <div class="slick-slide-item">
+            <div class="slick-slide-item" tabindex="-1">
                 <img 
                     src="<?php echo esc_url($slide['url']); ?>" 
                     alt="<?php echo esc_attr($slide['alt']); ?>"
