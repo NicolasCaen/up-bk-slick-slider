@@ -82,7 +82,7 @@ registerBlockType('up-bk/slick-slider', {
         },
         slidesToShow: {
             type: 'number',
-            default: 3
+            default: 1
         },
         slidesToScroll: {
             type: 'number',
@@ -117,8 +117,8 @@ registerBlockType('up-bk/slick-slider', {
             default: {
                 tablet: {
                     settings: {
-                        slidesToShow: 2,
-                        slidesToScroll: 2,
+                        slidesToShow: 1,
+                        slidesToScroll: 1,
                         arrows: true,
                         dots: true,
                         autoplay: true,

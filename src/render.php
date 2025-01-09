@@ -13,7 +13,7 @@ $arrows = filter_var($slick_attributes['arrows'] ?? true, FILTER_VALIDATE_BOOLEA
 $dots = filter_var($slick_attributes['dots'] ?? true, FILTER_VALIDATE_BOOLEAN);
 $infinite = filter_var($slick_attributes['infinite'] ?? true, FILTER_VALIDATE_BOOLEAN);
 $speed = intval($slick_attributes['speed'] ?? 500);
-$slidesToShow = intval($slick_attributes['slidesToShow'] ?? 3);
+$slidesToShow = intval($slick_attributes['slidesToShow'] ?? 1);
 $slidesToScroll = intval($slick_attributes['slidesToScroll'] ?? 1);
 $fade = filter_var($slick_attributes['fade'] ?? false, FILTER_VALIDATE_BOOLEAN);
 $centerMode = filter_var($slick_attributes['centerMode'] ?? false, FILTER_VALIDATE_BOOLEAN);
@@ -125,5 +125,3 @@ $right_arrow = apply_filters('bk_slider_arrow_right_' . $arrow_type, $right_arro
         <?php endforeach; ?>
     </div>
 </div>
-
-

@@ -115,8 +115,8 @@
                 "tablet": {
                     "breakpoint": 1024,
                     "settings": {
-                        "slidesToShow": 2,
-                        "slidesToScroll": 2,
+                        "slidesToShow": 1,
+                        "slidesToScroll": 1,
                         "arrows": true,
                         "dots": true,
                         "autoplay": true,
