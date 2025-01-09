@@ -126,18 +126,4 @@ $right_arrow = apply_filters('bk_slider_arrow_right_' . $arrow_type, $right_arro
     </div>
 </div>
 
-<style>
-.wp-block-up-bk-slick-slider .slick-slider {
-    margin: 0 calc(var(--gap, var(--desktop-gap)) * -0.5);
-}
 
-.wp-block-up-bk-slick-slider .slick-slide-item {
-    padding: 0 calc(var(--gap, var(--desktop-gap)) * 0.5);
-}
-
-.wp-block-up-bk-slick-slider .slick-slide-item img {
-    width: 100%;
-    height: 100%;
-    object-fit: var(--desktop-object-fit, cover);
-}
-</style>
