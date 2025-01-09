@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', function () {
         return;
     }
 
-    const sliders = document.querySelectorAll('.wp-block-up-bk-slick-slider .slick-slider');
+    const sliders = document.querySelectorAll('.wp-block-up-bk-slick-slider');
     
     if (sliders.length === 0) {
         console.log('No sliders found on page');
@@ -20,7 +20,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
     console.log('Found', sliders.length, 'slider(s)');
 
-    sliders.forEach(function (slider, index) {
+    sliders.forEach(function (sliderWrapper, index) {
+        const slider = sliderWrapper.querySelector('.slick-slider');
+        const prevArrow = sliderWrapper.querySelector('.wp-block-up-bk-slick-slider__nav__arrow--prev');
+        const nextArrow = sliderWrapper.querySelector('.wp-block-up-bk-slick-slider__nav__arrow--next');
+
         // Helper function to parse boolean attributes
         const parseBool = (value) => value === 'true';
         
@@ -37,7 +41,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const options = {
             autoplay: parseBool(slider.dataset.autoplay),
             autoplaySpeed: parseInteger(slider.dataset.autoplaySpeed, 3000),
-            arrows: parseBool(slider.dataset.arrows),
+            arrows: false, // On désactive les flèches par défaut de Slick
             dots: parseBool(slider.dataset.dots),
             infinite: parseBool(slider.dataset.infinite),
             speed: parseInteger(slider.dataset.speed, 500),
@@ -76,6 +80,20 @@ document.addEventListener('DOMContentLoaded', function () {
             
             // Initialize with options
             $slider.slick(options);
+
+            // Ajouter les gestionnaires d'événements pour les flèches personnalisées
+            if (prevArrow) {
+                prevArrow.addEventListener('click', function() {
+                    $slider.slick('slickPrev');
+                });
+            }
+            
+            if (nextArrow) {
+                nextArrow.addEventListener('click', function() {
+                    $slider.slick('slickNext');
+                });
+            }
+
             console.log('Slider initialized successfully');
         } catch (e) {
             console.error('Error initializing slider:', e);
