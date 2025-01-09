@@ -38,6 +38,25 @@ document.addEventListener('DOMContentLoaded', function () {
         // Log all data attributes
         console.log('Slider', index, 'data attributes:', slider.dataset);
 
+        // Fonction pour gérer l'accessibilité des slides
+        function updateSlideAccessibility($slider, currentSlide) {
+            const slides = $slider[0].querySelectorAll('.slick-slide');
+            slides.forEach((slide, index) => {
+                // Supprimer aria-hidden qui est ajouté par Slick
+                slide.removeAttribute('aria-hidden');
+                
+                if (index === currentSlide) {
+                    // Slide actif
+                    slide.inert = false;
+                    slide.setAttribute('tabindex', '0');
+                } else {
+                    // Slides inactifs
+                    slide.inert = true;
+                    slide.setAttribute('tabindex', '-1');
+                }
+            });
+        }
+
         // Base options
         const options = {
             autoplay: parseBool(slider.dataset.autoplay),
@@ -55,22 +74,17 @@ document.addEventListener('DOMContentLoaded', function () {
             swipe: parseBool(slider.dataset.swipe),
             accessibility: true,
             beforeChange: function(event, slick, currentSlide, nextSlide) {
-                const slides = slick.$slides;
-                slides.each(function(index) {
-                    if (index !== nextSlide) {
-                        this.inert = true;
-                        jQuery(this).removeAttr('tabindex');
-                    }
-                });
+                const $slider = jQuery(slick.$slider);
+                updateSlideAccessibility($slider, nextSlide);
             },
             afterChange: function(event, slick, currentSlide) {
-                const slides = slick.$slides;
-                slides.each(function(index) {
-                    if (index === currentSlide) {
-                        this.inert = false;
-                        jQuery(this).attr('tabindex', '0');
-                    }
-                });
+                const $slider = jQuery(slick.$slider);
+                updateSlideAccessibility($slider, currentSlide);
+            },
+            init: function(slick) {
+                const $slider = jQuery(slick.$slider);
+                // Initialisation de l'accessibilité
+                updateSlideAccessibility($slider, 0);
             }
         };
 
@@ -107,7 +121,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Initialize Slick
         try {
-            console.log('Initializing slider with options:', options);
             const $slider = jQuery(slider);
             
             // Destroy if already initialized
@@ -126,7 +139,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     slide.setAttribute('tabindex', '0');
                 } else {
                     slide.inert = true;
-                    slide.removeAttribute('tabindex');
+                    slide.setAttribute('tabindex', '-1');
                 }
             });
 
@@ -136,6 +149,25 @@ document.addEventListener('DOMContentLoaded', function () {
                 $slider.addClass('fixed-height');
                 slider.style.setProperty('--slide-height', currentSettings.slideHeight || 'auto');
             }
+
+            // Observer pour supprimer aria-hidden ajouté par Slick
+            const observer = new MutationObserver((mutations) => {
+                mutations.forEach((mutation) => {
+                    if (mutation.type === 'attributes' && mutation.attributeName === 'aria-hidden') {
+                        const currentSlide = $slider.slick('slickCurrentSlide');
+                        updateSlideAccessibility($slider, currentSlide);
+                    }
+                });
+            });
+
+            // Observer tous les slides
+            const slidesObserved = slider.querySelectorAll('.slick-slide');
+            slidesObserved.forEach(slide => {
+                observer.observe(slide, {
+                    attributes: true,
+                    attributeFilter: ['aria-hidden']
+                });
+            });
 
             // Ajouter les gestionnaires d'événements pour les flèches personnalisées
             if (prevArrow) {
