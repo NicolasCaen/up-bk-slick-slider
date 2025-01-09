@@ -560,18 +560,13 @@ export default function Edit({ attributes, setAttributes }) {
                     {arrows && (
                         <>
                             <SelectControl
-                                label={__('Arrow Style', 'up-bk-slick-slider')}
-                                value={arrowType}
-                                options={arrowTypes}
-                                onChange={(value) => setAttributes({ arrowType: value })}
-                            />
-                            <SelectControl
-                                label={__('Arrow Position', 'up-bk-slick-slider')}
-                                value={arrowPosition || 'center'}
-                                options={arrowPositions}
-                                onChange={(value) => {
-                                    setAttributes({ arrowPosition: value });
-                                }}
+                                label={__('Arrow position', 'up-bk-slick-slider')}
+                                value={arrowPosition}
+                                options={[
+                                    { label: __('Sides', 'up-bk-slick-slider'), value: 'sides' },
+                                    { label: __('Bottom', 'up-bk-slick-slider'), value: 'bottom' },
+                                ]}
+                                onChange={(value) => setAttributes({ arrowPosition: value })}
                             />
                             <TextControl
                                 label={__('Icon Size', 'up-bk-slick-slider')}
