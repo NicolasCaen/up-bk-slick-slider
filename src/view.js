@@ -42,8 +42,8 @@ document.addEventListener('DOMContentLoaded', function () {
         const options = {
             autoplay: parseBool(slider.dataset.autoplay),
             autoplaySpeed: parseInteger(slider.dataset.autoplaySpeed, 3000),
-            arrows: parseBool(slider.dataset.showArrows), // On utilise l'attribut data-show-arrows
-            dots: parseBool(slider.dataset.showDots), // On utilise l'attribut data-show-dots
+            arrows: parseBool(slider.dataset.arrows),
+            dots: parseBool(slider.dataset.dots),
             infinite: parseBool(slider.dataset.infinite),
             speed: parseInteger(slider.dataset.speed, 500),
             slidesToShow: parseInteger(slider.dataset.slidesToShow, 1),
@@ -53,7 +53,25 @@ document.addEventListener('DOMContentLoaded', function () {
             adaptiveHeight: parseBool(slider.dataset.adaptiveHeight),
             pauseOnHover: parseBool(slider.dataset.pauseOnHover),
             swipe: parseBool(slider.dataset.swipe),
-            responsive: null
+            accessibility: true,
+            beforeChange: function(event, slick, currentSlide, nextSlide) {
+                const slides = slick.$slides;
+                slides.each(function(index) {
+                    if (index !== nextSlide) {
+                        this.inert = true;
+                        jQuery(this).removeAttr('tabindex');
+                    }
+                });
+            },
+            afterChange: function(event, slick, currentSlide) {
+                const slides = slick.$slides;
+                slides.each(function(index) {
+                    if (index === currentSlide) {
+                        this.inert = false;
+                        jQuery(this).attr('tabindex', '0');
+                    }
+                });
+            }
         };
 
         // Add responsive breakpoints if enabled
@@ -61,8 +79,26 @@ document.addEventListener('DOMContentLoaded', function () {
             try {
                 const responsiveData = slider.dataset.responsive;
                 if (responsiveData) {
-                    options.responsive = JSON.parse(responsiveData);
-                    console.log('Using responsive settings:', options.responsive);
+                    const responsive = JSON.parse(responsiveData);
+                    responsive.forEach(breakpoint => {
+                        if (breakpoint.settings.fixedHeight !== undefined) {
+                            const originalSettings = breakpoint.settings;
+                            breakpoint.settings = {
+                                ...originalSettings,
+                                onBreakpoint: function(breakpoint) {
+                                    const $slider = jQuery(slider);
+                                    if (originalSettings.fixedHeight) {
+                                        $slider.addClass('fixed-height');
+                                        slider.style.setProperty('--slide-height', originalSettings.slideHeight || 'auto');
+                                    } else {
+                                        $slider.removeClass('fixed-height');
+                                        slider.style.removeProperty('--slide-height');
+                                    }
+                                }
+                            };
+                        }
+                    });
+                    options.responsive = responsive;
                 }
             } catch (e) {
                 console.error('Error parsing responsive settings:', e);
@@ -82,6 +118,25 @@ document.addEventListener('DOMContentLoaded', function () {
             // Initialize with options
             $slider.slick(options);
 
+            // Configuration initiale de l'accessibilité
+            const slides = slider.querySelectorAll('.slick-slide');
+            slides.forEach((slide, index) => {
+                if (index === 0) {
+                    slide.inert = false;
+                    slide.setAttribute('tabindex', '0');
+                } else {
+                    slide.inert = true;
+                    slide.removeAttribute('tabindex');
+                }
+            });
+
+            // Gestion initiale de fixed-height
+            const currentSettings = $slider.slick('slickGetOption');
+            if (currentSettings.fixedHeight) {
+                $slider.addClass('fixed-height');
+                slider.style.setProperty('--slide-height', currentSettings.slideHeight || 'auto');
+            }
+
             // Ajouter les gestionnaires d'événements pour les flèches personnalisées
             if (prevArrow) {
                 prevArrow.addEventListener('click', function() {
@@ -95,32 +150,33 @@ document.addEventListener('DOMContentLoaded', function () {
                 });
             }
 
-            // Mettre à jour les attributs data en fonction des options actuelles
-            function updateDataAttributes() {
+            // Mettre à jour les variables CSS en fonction des breakpoints
+            function updateResponsiveStyles() {
+                const width = window.innerWidth;
                 const slickObj = $slider.slick('getSlick');
                 const responsive = slickObj.options.responsive || [];
-                let currentSettings = slickObj.options;
-
+                
                 // Trouver les paramètres actuels en fonction du breakpoint
-                const currentWidth = window.innerWidth;
+                let currentSettings = slickObj.options;
                 for (let i = 0; i < responsive.length; i++) {
-                    if (currentWidth <= responsive[i].breakpoint) {
+                    if (width <= responsive[i].breakpoint) {
                         currentSettings = responsive[i].settings;
                     }
                 }
 
-                // Mettre à jour les attributs data
-                sliderWrapper.dataset.showArrows = currentSettings.arrows !== false;
-                sliderWrapper.dataset.showDots = currentSettings.dots !== false;
+                // Appliquer les variables CSS
+                if (currentSettings.cssVariables) {
+                    Object.entries(currentSettings.cssVariables).forEach(([key, value]) => {
+                        slider.style.setProperty(key, value);
+                    });
+                }
             }
 
-            // Mettre à jour les attributs au chargement
-            updateDataAttributes();
+            // Mettre à jour les styles au chargement
+            updateResponsiveStyles();
 
-            // Mettre à jour les attributs lors des changements de breakpoint
-            $slider.on('breakpoint', function(event, slick, breakpoint) {
-                updateDataAttributes();
-            });
+            // Mettre à jour les styles lors des changements de breakpoint
+            $slider.on('breakpoint', updateResponsiveStyles);
 
             console.log('Slider initialized successfully');
         } catch (e) {

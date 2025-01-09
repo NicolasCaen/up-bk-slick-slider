@@ -158,6 +158,10 @@
         &.fixed-height {
             .slick-slide {
                 height: var(--slide-height);
+                
+                &-item {
+                    height: var(--slide-height);
+                }
 
                 .slick-slide-image {
                     width: 100%;

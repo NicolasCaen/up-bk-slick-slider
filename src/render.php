@@ -77,7 +77,7 @@ $slides = !empty($slick_attributes['slides']) ? $slick_attributes['slides'] : []
 // Initial styles
 $initial_styles = [];
 if ($fixedHeight) {
-    $initial_styles[] = sprintf('height: %s', esc_attr($slideHeight));
+    $initial_styles[] = sprintf('--slide-height: %s', esc_attr($slideHeight));
 }
 $initial_styles[] = sprintf('--desktop-gap: %dpx', $gap);
 $initial_styles[] = sprintf('--desktop-object-fit: %s', esc_attr($objectFit));
@@ -113,7 +113,7 @@ $right_arrow = apply_filters('bk_slider_arrow_right_' . $arrow_type, $right_arro
     </div>
     <?php endif; ?>
     
-    <div class="slick-slider" 
+    <div class="slick-slider<?php echo $fixedHeight ? ' fixed-height' : ''; ?>" 
         role="region"
         aria-label="<?php echo esc_attr__('Image Slider', 'up-bk-slick-slider'); ?>"
         data-slick='<?php echo wp_json_encode($slick_options); ?>'
