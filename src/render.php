@@ -88,7 +88,15 @@ $style_string = implode('; ', $initial_styles);
 
 // Get arrow SVG content based on type
 $arrow_type = $attributes['arrowType'] ?? 'type1';
-$arrow_position = $attributes['arrowPosition'] ?? 'outside';
+$arrow_position = $attributes['arrowPosition'] ?? 'sides';
+
+$nav_styles = sprintf(
+    'style="--nav-icon-size: %s; --nav-gap: %sem; --nav-radius: %s; --nav-padding: %sem;"',
+    esc_attr($attributes['navIconSize'] ?? '24px'),
+    esc_attr($attributes['navGap'] ?? 1),
+    esc_attr($attributes['navRadius'] ?? '50%'),
+    esc_attr($attributes['navPadding'] ?? 0.5)
+);
 
 $left_arrow_path = plugin_dir_path(__DIR__) . 'assets/arrows/' . $arrow_type . '/arrow-left.svg';
 $right_arrow_path = plugin_dir_path(__DIR__) . 'assets/arrows/' . $arrow_type . '/arrow-right.svg';
@@ -101,7 +109,9 @@ $left_arrow = apply_filters('bk_slider_arrow_left_' . $arrow_type, $left_arrow);
 $right_arrow = apply_filters('bk_slider_arrow_right_' . $arrow_type, $right_arrow);
 ?>
 
-<div class="wp-block-up-bk-slick-slider" data-arrow-position="<?php echo esc_attr($arrow_position); ?>">
+<div class="wp-block-up-bk-slick-slider" 
+    data-arrow-position="<?php echo esc_attr($arrow_position); ?>"
+    <?php echo $nav_styles; ?>>
     <div class="wp-block-up-bk-slick-slider__nav">
         <div class="wp-block-up-bk-slick-slider__nav__arrow wp-block-up-bk-slick-slider__nav__arrow--prev">
             <?php echo $left_arrow; ?>
