@@ -57,6 +57,14 @@
             "type": "boolean",
             "default": true
         },
+        "arrowType": {
+            "type": "string",
+            "default": "type1"
+        },
+        "arrowPosition": {
+            "type": "string",
+            "default": "outside"
+        },
         "dots": {
             "type": "boolean",
             "default": true

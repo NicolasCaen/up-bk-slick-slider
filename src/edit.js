@@ -42,7 +42,9 @@ export default function Edit({ attributes, setAttributes }) {
         pauseOnHover,
         swipe,
         breakpoints,
-        responsive
+        responsive,
+        arrowType,
+        arrowPosition
     } = attributes;
 
     const blockProps = useBlockProps();
@@ -94,6 +96,18 @@ export default function Edit({ attributes, setAttributes }) {
         newBreakpoints[device].settings[field] = value;
         setAttributes({ breakpoints: newBreakpoints });
     };
+
+    // Définition des types de flèches disponibles
+    const arrowTypes = [
+        { label: __('Type 1', 'up-bk-slick-slider'), value: 'type1' },
+        { label: __('Type 2', 'up-bk-slick-slider'), value: 'type2' },
+    ];
+
+    // Définition des positions de flèches disponibles
+    const arrowPositions = [
+        { label: __('Outside', 'up-bk-slick-slider'), value: 'outside' },
+        { label: __('Inside', 'up-bk-slick-slider'), value: 'inside' },
+    ];
 
     return (
         <div {...blockProps}>
@@ -209,6 +223,29 @@ export default function Edit({ attributes, setAttributes }) {
                         checked={dots}
                         onChange={(value) => setAttributes({ dots: value })}
                     />
+                </PanelBody>
+
+                {arrows && (
+                    <PanelBody 
+                        title={__('Navigation', 'up-bk-slick-slider')}
+                        initialOpen={false}
+                    >
+                        <SelectControl
+                            label={__('Arrow Style', 'up-bk-slick-slider')}
+                            value={arrowType}
+                            options={arrowTypes}
+                            onChange={(value) => setAttributes({ arrowType: value })}
+                        />
+                        <SelectControl
+                            label={__('Arrow Position', 'up-bk-slick-slider')}
+                            value={arrowPosition}
+                            options={arrowPositions}
+                            onChange={(value) => setAttributes({ arrowPosition: value })}
+                        />
+                    </PanelBody>
+                )}
+
+                <PanelBody title={__('Advanced Settings', 'up-bk-slick-slider')} initialOpen={false}>
                     <ToggleControl
                         label={__('Infinite Loop', 'up-bk-slick-slider')}
                         checked={infinite}
