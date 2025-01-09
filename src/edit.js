@@ -163,14 +163,105 @@ export default function Edit({ attributes, setAttributes }) {
                     )}
                 </PanelBody>
 
-                <PanelBody title={__('Slide Dimensions', 'up-bk-slick-slider')} initialOpen={false}>
+       
+
+                <PanelBody title={__('Slider Settings', 'up-bk-slick-slider')} initialOpen={false}>
+        
+
                     <ToggleControl
+                        label={__('Autoplay', 'up-bk-slick-slider')}
+                        checked={autoplay}
+                        onChange={(value) => setAttributes({ autoplay: value })}
+                    />
+                    {autoplay && (
+                        <RangeControl
+                            label={__('Autoplay Speed (ms)', 'up-bk-slick-slider')}
+                            value={autoplaySpeed}
+                            onChange={(value) => setAttributes({ autoplaySpeed: value })}
+                            min={1000}
+                            max={10000}
+                            step={500}
+                        />
+                    )}
+
+                    <RangeControl
+                        label={__('Animation Speed (ms)', 'up-bk-slick-slider')}
+                        value={speed}
+                        onChange={(value) => setAttributes({ speed: value })}
+                        min={100}
+                        max={3000}
+                        step={100}
+                    />
+                                        <ToggleControl
+                        label={__('Infinite Loop', 'up-bk-slick-slider')}
+                        checked={infinite}
+                        onChange={(value) => setAttributes({ infinite: value })}
+                    />
+                    <ToggleControl
+                        label={__('Show Arrows', 'up-bk-slick-slider')}
+                        checked={arrows}
+                        onChange={(value) => setAttributes({ arrows: value })}
+                    />
+                    <ToggleControl
+                        label={__('Show Dots', 'up-bk-slick-slider')}
+                        checked={dots}
+                        onChange={(value) => setAttributes({ dots: value })}
+                    />
+                    <ToggleControl
+                        label={__('Fade Effect', 'up-bk-slick-slider')}
+                        checked={fade}
+                        onChange={(value) => setAttributes({ fade: value })}
+                    />
+                    <ToggleControl
+                        label={__('Center Mode', 'up-bk-slick-slider')}
+                        checked={centerMode}
+                        onChange={(value) => setAttributes({ centerMode: value })}
+                    />
+                    <ToggleControl
+                        label={__('Adaptive Height', 'up-bk-slick-slider')}
+                        checked={adaptiveHeight}
+                        onChange={(value) => setAttributes({ adaptiveHeight: value })}
+                    />
+                    <ToggleControl
+                        label={__('Pause on Hover', 'up-bk-slick-slider')}
+                        checked={pauseOnHover}
+                        onChange={(value) => setAttributes({ pauseOnHover: value })}
+                    />
+                    <ToggleControl
+                        label={__('Enable Swipe', 'up-bk-slick-slider')}
+                        checked={swipe}
+                        onChange={(value) => setAttributes({ swipe: value })}
+                    />
+                </PanelBody>
+
+
+
+                <PanelBody title={__('Advanced Settings', 'up-bk-slick-slider')} initialOpen={false}>
+
+                    <RangeControl
+                        label={__('Slides to Show', 'up-bk-slick-slider')}
+                        value={slidesToShow}
+                        onChange={(value) => setAttributes({ slidesToShow: value })}
+                        min={1}
+                        max={8}
+                        step={1}
+                    />
+                    <RangeControl
+                        label={__('Slides to Scroll', 'up-bk-slick-slider')}
+                        value={slidesToScroll}
+                        onChange={(value) => setAttributes({ slidesToScroll: value })}
+                        min={1}
+                        max={8}
+                        step={1}
+                    />
+                    
+                            <ToggleControl
                         label={__('Fixed Height', 'up-bk-slick-slider')}
                         help={__('Enable to set a fixed height for all slides', 'up-bk-slick-slider')}
                         checked={fixedHeight}
                         onChange={(value) => setAttributes({ fixedHeight: value })}
                     />
-                    {fixedHeight && (
+                                        {fixedHeight && (
                         <>
                             <TextControl
                                 label={__('Slide Height', 'up-bk-slick-slider')}
@@ -198,113 +289,6 @@ export default function Edit({ attributes, setAttributes }) {
                         min={0}
                         max={300}
                         step={1}
-                    />
-                </PanelBody>
-
-                <PanelBody title={__('Slider Settings', 'up-bk-slick-slider')} initialOpen={false}>
-                    <ToggleControl
-                        label={__('Autoplay', 'up-bk-slick-slider')}
-                        checked={autoplay}
-                        onChange={(value) => setAttributes({ autoplay: value })}
-                    />
-                    {autoplay && (
-                        <RangeControl
-                            label={__('Autoplay Speed (ms)', 'up-bk-slick-slider')}
-                            value={autoplaySpeed}
-                            onChange={(value) => setAttributes({ autoplaySpeed: value })}
-                            min={1000}
-                            max={10000}
-                            step={500}
-                        />
-                    )}
-                    <ToggleControl
-                        label={__('Show Arrows', 'up-bk-slick-slider')}
-                        checked={arrows}
-                        onChange={(value) => setAttributes({ arrows: value })}
-                    />
-                    <ToggleControl
-                        label={__('Show Dots', 'up-bk-slick-slider')}
-                        checked={dots}
-                        onChange={(value) => setAttributes({ dots: value })}
-                    />
-                </PanelBody>
-
-                {arrows && (
-                    <PanelBody 
-                        title={__('Navigation', 'up-bk-slick-slider')}
-                        initialOpen={false}
-                    >
-                        <SelectControl
-                            label={__('Arrow Style', 'up-bk-slick-slider')}
-                            value={arrowType}
-                            options={arrowTypes}
-                            onChange={(value) => setAttributes({ arrowType: value })}
-                        />
-                        <SelectControl
-                            label={__('Arrow Position', 'up-bk-slick-slider')}
-                            value={arrowPosition || 'center'}
-                            options={arrowPositions}
-                            onChange={(value) => {
-                                setAttributes({ arrowPosition: value });
-                            }}
-                        />
-                    </PanelBody>
-                )}
-
-                <PanelBody title={__('Advanced Settings', 'up-bk-slick-slider')} initialOpen={false}>
-                    <ToggleControl
-                        label={__('Infinite Loop', 'up-bk-slick-slider')}
-                        checked={infinite}
-                        onChange={(value) => setAttributes({ infinite: value })}
-                    />
-                    <RangeControl
-                        label={__('Animation Speed (ms)', 'up-bk-slick-slider')}
-                        value={speed}
-                        onChange={(value) => setAttributes({ speed: value })}
-                        min={100}
-                        max={3000}
-                        step={100}
-                    />
-                    <RangeControl
-                        label={__('Slides to Show', 'up-bk-slick-slider')}
-                        value={slidesToShow}
-                        onChange={(value) => setAttributes({ slidesToShow: value })}
-                        min={1}
-                        max={8}
-                        step={1}
-                    />
-                    <RangeControl
-                        label={__('Slides to Scroll', 'up-bk-slick-slider')}
-                        value={slidesToScroll}
-                        onChange={(value) => setAttributes({ slidesToScroll: value })}
-                        min={1}
-                        max={8}
-                        step={1}
-                    />
-                    <ToggleControl
-                        label={__('Fade Effect', 'up-bk-slick-slider')}
-                        checked={fade}
-                        onChange={(value) => setAttributes({ fade: value })}
-                    />
-                    <ToggleControl
-                        label={__('Center Mode', 'up-bk-slick-slider')}
-                        checked={centerMode}
-                        onChange={(value) => setAttributes({ centerMode: value })}
-                    />
-                    <ToggleControl
-                        label={__('Adaptive Height', 'up-bk-slick-slider')}
-                        checked={adaptiveHeight}
-                        onChange={(value) => setAttributes({ adaptiveHeight: value })}
-                    />
-                    <ToggleControl
-                        label={__('Pause on Hover', 'up-bk-slick-slider')}
-                        checked={pauseOnHover}
-                        onChange={(value) => setAttributes({ pauseOnHover: value })}
-                    />
-                    <ToggleControl
-                        label={__('Enable Swipe', 'up-bk-slick-slider')}
-                        checked={swipe}
-                        onChange={(value) => setAttributes({ swipe: value })}
                     />
                 </PanelBody>
 
@@ -551,6 +535,27 @@ export default function Edit({ attributes, setAttributes }) {
                         </>
                     )}
                 </PanelBody>
+                {arrows && (
+                    <PanelBody 
+                        title={__('Navigation', 'up-bk-slick-slider')}
+                        initialOpen={false}
+                    >
+                        <SelectControl
+                            label={__('Arrow Style', 'up-bk-slick-slider')}
+                            value={arrowType}
+                            options={arrowTypes}
+                            onChange={(value) => setAttributes({ arrowType: value })}
+                        />
+                        <SelectControl
+                            label={__('Arrow Position', 'up-bk-slick-slider')}
+                            value={arrowPosition || 'center'}
+                            options={arrowPositions}
+                            onChange={(value) => {
+                                setAttributes({ arrowPosition: value });
+                            }}
+                        />
+                    </PanelBody>
+                )}
             </InspectorControls>
 
             <div className="wp-block-up-bk-slick-slider-editor">
