@@ -71,7 +71,7 @@
     // Position Center
     &[data-arrow-position="center"] {
         .wp-block-up-bk-slick-slider__nav{
-            display: contents !important;
+            display: contents;
             position: static;
         }
         .wp-block-up-bk-slick-slider__nav__arrow {
