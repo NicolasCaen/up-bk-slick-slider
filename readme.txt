@@ -1,9 +1,9 @@
 === UP BK Slick Slider ===
-Contributors: UP
+Contributors: GEHIN Nicolas
 Tags: block, slider, slick
 Requires at least: 6.1
 Tested up to: 6.4
-Stable tag: 1.3
+Stable tag: 1.4
 Requires PHP: 7.0
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -19,9 +19,11 @@ Features:
 * Easy-to-use interface in the Gutenberg editor
 * Multiple slides support
 * Customizable settings (autoplay, speed, arrows, dots, etc.)
-* Responsive design
+* Responsive design with breakpoint controls
 * Support for fixed height slides
 * Gap control between slides
+* Multiple arrow positions and styles
+* Dynamic visibility control for arrows and dots
 
 == Installation ==
 
@@ -39,13 +41,26 @@ Simply click the "Add Images" button in the block editor to upload or select ima
 
 Yes, you can customize various settings in the block sidebar, including:
 * Autoplay and autoplay speed
-* Navigation arrows and dots
+* Navigation arrows and dots visibility
+* Arrow position and style
 * Slide transition effects
 * Number of slides to show
 * Gap between slides
 * Fixed height option
+* Responsive breakpoint settings
 
 == Changelog ==
+
+= 1.4 =
+* Added: Responsive breakpoints support for arrow and dot visibility
+* Added: Dynamic data attributes for controlling arrow and dot visibility
+* Added: Improved gap handling with CSS variables
+* Added: Better object-fit control for images
+* Changed: Moved slider styles from inline to SCSS file
+* Changed: Improved responsive settings handling
+* Fixed: Arrow visibility issues in responsive mode
+* Fixed: Gap calculation in slider items
+* Fixed: Object-fit handling across different screen sizes
 
 = 1.3 =
 * Amélioration de la gestion responsive des slides
@@ -67,6 +82,9 @@ Yes, you can customize various settings in the block sidebar, including:
 * Initial release
 
 == Upgrade Notice ==
+
+= 1.4 =
+This version includes significant improvements to responsive controls, arrow and dot visibility management, and better styling organization. Update for better control over your sliders across different screen sizes.
 
 = 1.3 =
 This version includes improvements to the responsive management of slides, correction of gaps between slides, and dynamic adjustment of heights and object-fit based on screen size.
