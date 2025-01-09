@@ -102,7 +102,6 @@ $right_arrow = apply_filters('bk_slider_arrow_right_' . $arrow_type, $right_arro
 ?>
 
 <div class="wp-block-up-bk-slick-slider" data-arrow-position="<?php echo esc_attr($arrow_position); ?>">
-    <?php if (!empty($attributes['arrows'])): ?>
     <div class="wp-block-up-bk-slick-slider__nav">
         <div class="wp-block-up-bk-slick-slider__nav__arrow wp-block-up-bk-slick-slider__nav__arrow--prev">
             <?php echo $left_arrow; ?>
@@ -113,7 +112,6 @@ $right_arrow = apply_filters('bk_slider_arrow_right_' . $arrow_type, $right_arro
             <span class="screen-reader-text"><?php echo esc_html__('Next slide', 'up-bk-slick-slider'); ?></span>
         </div>
     </div>
-    <?php endif; ?>
     
     <div class="slick-slider<?php echo $fixedHeight ? ' fixed-height' : ''; ?>" 
         role="region"

@@ -20,6 +20,19 @@ document.addEventListener('DOMContentLoaded', function () {
 
     console.log('Found', sliders.length, 'slider(s)');
 
+    // Fonction pour débouncer les appels
+    function debounce(func, wait) {
+        let timeout;
+        return function executedFunction(...args) {
+            const later = () => {
+                clearTimeout(timeout);
+                func(...args);
+            };
+            clearTimeout(timeout);
+            timeout = setTimeout(later, wait);
+        };
+    }
+
     sliders.forEach(function (sliderWrapper, index) {
         const slider = sliderWrapper.querySelector('.slick-slider');
         const prevArrow = sliderWrapper.querySelector('.wp-block-up-bk-slick-slider__nav__arrow--prev');
@@ -57,6 +70,25 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         }
 
+        // Fonction pour mettre à jour l'affichage des flèches
+        function updateArrowsVisibility(settings) {
+            if (settings && typeof settings.arrows !== 'undefined') {
+                const showArrows = settings.arrows === true || settings.arrows === 'true';
+                sliderWrapper.setAttribute('data-show-arrows', showArrows);
+            }
+        }
+
+        // Fonction pour mettre à jour les options en fonction de la taille de l'écran
+        function updateResponsiveSettings() {
+            const $slider = jQuery(slider);
+            if ($slider.hasClass('slick-initialized')) {
+                const currentSettings = $slider.slick('slickGetOption', null);
+                updateArrowsVisibility({
+                    arrows: currentSettings.arrows
+                });
+            }
+        }
+
         // Base options
         const options = {
             autoplay: parseBool(slider.dataset.autoplay),
@@ -88,6 +120,9 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         };
 
+        // Initialiser l'affichage des flèches avec les options par défaut
+        updateArrowsVisibility(options);
+
         // Add responsive breakpoints if enabled
         if (parseBool(slider.dataset.responsiveEnabled)) {
             try {
@@ -95,11 +130,15 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (responsiveData) {
                     const responsive = JSON.parse(responsiveData);
                     responsive.forEach(breakpoint => {
-                        if (breakpoint.settings.fixedHeight !== undefined) {
-                            const originalSettings = breakpoint.settings;
-                            breakpoint.settings = {
-                                ...originalSettings,
-                                onBreakpoint: function(breakpoint) {
+                        const originalSettings = breakpoint.settings;
+                        breakpoint.settings = {
+                            ...originalSettings,
+                            onBreakpoint: function(breakpoint) {
+                                const $slider = jQuery(slider);
+                                // Mise à jour de l'affichage des flèches pour ce breakpoint
+                                updateArrowsVisibility(originalSettings);
+                                
+                                if (originalSettings.fixedHeight !== undefined) {
                                     const $slider = jQuery(slider);
                                     if (originalSettings.fixedHeight) {
                                         $slider.addClass('fixed-height');
@@ -109,8 +148,8 @@ document.addEventListener('DOMContentLoaded', function () {
                                         slider.style.removeProperty('--slide-height');
                                     }
                                 }
-                            };
-                        }
+                            }
+                        };
                     });
                     options.responsive = responsive;
                 }
@@ -144,7 +183,7 @@ document.addEventListener('DOMContentLoaded', function () {
             });
 
             // Gestion initiale de fixed-height
-            const currentSettings = $slider.slick('slickGetOption');
+            const currentSettings = $slider.slick('slickGetOption', null);
             if (currentSettings.fixedHeight) {
                 $slider.addClass('fixed-height');
                 slider.style.setProperty('--slide-height', currentSettings.slideHeight || 'auto');
@@ -211,6 +250,23 @@ document.addEventListener('DOMContentLoaded', function () {
             $slider.on('breakpoint', updateResponsiveStyles);
 
             console.log('Slider initialized successfully');
+
+            // Mettre à jour l'affichage des flèches avec les paramètres actuels
+            updateArrowsVisibility({
+                arrows: $slider.slick('slickGetOption', 'arrows')
+            });
+
+            // Ajouter un événement pour détecter les changements de breakpoint
+            $slider.on('breakpoint', function(event, slick, breakpoint) {
+                const currentSettings = $slider.slick('slickGetOption', null);
+                updateArrowsVisibility({
+                    arrows: currentSettings.arrows
+                });
+            });
+
+            // Ajouter l'événement resize avec debounce
+            window.addEventListener('resize', debounce(updateResponsiveSettings, 250));
+
         } catch (e) {
             console.error('Error initializing slider:', e);
         }

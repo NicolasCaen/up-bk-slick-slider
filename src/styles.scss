@@ -10,7 +10,10 @@
     // Gestion des flèches personnalisées
     &[data-show-arrows="false"] {
         .wp-block-up-bk-slick-slider__nav {
-            display: none;
+            display: none !important;
+        }
+        .slick-prev, .slick-next {
+            display: none !important;
         }
     }
 
@@ -97,7 +100,7 @@
     &[data-arrow-position="top-right"] {
         .wp-block-up-bk-slick-slider__nav {
             position: absolute;
-            top: O;
+            top: 0;
             left: initial;
             bottom: initial;
             right: 0;
@@ -132,9 +135,9 @@
         .wp-block-up-bk-slick-slider__nav {
             position: absolute;
             top: initial;
-            left:initial;
+            left: initial;
             bottom: 0;
-            right:0;
+            right: 0;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -150,7 +153,7 @@
             position: absolute;
             top: initial;
             bottom: 0;
-            left:50%;
+            left: 50%;
             transform: translateX(-50%);
             display: flex;
             justify-content: center;
