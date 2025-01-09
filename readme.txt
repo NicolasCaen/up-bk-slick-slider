@@ -3,7 +3,7 @@ Contributors: GEHIN Nicolas
 Tags: block, slider, slick
 Requires at least: 6.1
 Tested up to: 6.4
-Stable tag: 1.4
+Stable tag: 1.5.0
 Requires PHP: 7.0
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -47,6 +47,14 @@ Yes, you can customize various settings in the block sidebar, including:
 
 == Changelog ==
 
+= 1.5.0 =
+* Amélioration : Gestion améliorée des flèches de navigation avec un nouveau système de positionnement
+* Amélioration : Ajout du support de la largeur variable (variableWidth) dans les paramètres généraux et responsifs
+* Amélioration : Meilleure gestion de l'accessibilité avec l'attribut inert au lieu de aria-hidden
+* Amélioration : Les flèches de navigation sont maintenant toujours présentes dans le DOM et contrôlées via CSS
+* Correction : Les flèches de navigation se mettent correctement à jour lors des changements de breakpoint
+* Correction : Meilleure gestion des événements resize pour la mise à jour des options responsives
+
 = 1.4 =
 * Added: Responsive breakpoints support with customizable settings for different screen sizes
 * Added: Dynamic data attributes for controlling slider behavior
@@ -79,6 +87,9 @@ Yes, you can customize various settings in the block sidebar, including:
 * Initial release
 
 == Upgrade Notice ==
+
+= 1.5.0 =
+This version includes significant improvements to navigation arrow management, variable width support, and accessibility enhancements. Update for better control over your sliders.
 
 = 1.4 =
 This version includes significant improvements to responsive controls, arrow and dot visibility management, and better styling organization. Update for better control over your sliders across different screen sizes.
