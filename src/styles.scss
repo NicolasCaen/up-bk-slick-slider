@@ -1,6 +1,26 @@
 .wp-block-up-bk-slick-slider {
     position: relative;
 
+    // Masquer les flèches par défaut de Slick
+    .slick-prev,
+    .slick-next {
+        display: none !important;
+    }
+
+    // Gestion des flèches personnalisées
+    &[data-show-arrows="false"] {
+        .wp-block-up-bk-slick-slider__nav {
+            display: none;
+        }
+    }
+
+    // Gestion des points
+    &[data-show-dots="false"] {
+        .slick-dots {
+            display: none !important;
+        }
+    }
+
     &__nav {
         position: absolute;
         top: 0;

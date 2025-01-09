@@ -24,6 +24,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const slider = sliderWrapper.querySelector('.slick-slider');
         const prevArrow = sliderWrapper.querySelector('.wp-block-up-bk-slick-slider__nav__arrow--prev');
         const nextArrow = sliderWrapper.querySelector('.wp-block-up-bk-slick-slider__nav__arrow--next');
+        const dotsContainer = sliderWrapper.querySelector('.slick-dots');
 
         // Helper function to parse boolean attributes
         const parseBool = (value) => value === 'true';
@@ -41,8 +42,8 @@ document.addEventListener('DOMContentLoaded', function () {
         const options = {
             autoplay: parseBool(slider.dataset.autoplay),
             autoplaySpeed: parseInteger(slider.dataset.autoplaySpeed, 3000),
-            arrows: false, // On désactive les flèches par défaut de Slick
-            dots: parseBool(slider.dataset.dots),
+            arrows: parseBool(slider.dataset.showArrows), // On utilise l'attribut data-show-arrows
+            dots: parseBool(slider.dataset.showDots), // On utilise l'attribut data-show-dots
             infinite: parseBool(slider.dataset.infinite),
             speed: parseInteger(slider.dataset.speed, 500),
             slidesToShow: parseInteger(slider.dataset.slidesToShow, 1),
@@ -93,6 +94,33 @@ document.addEventListener('DOMContentLoaded', function () {
                     $slider.slick('slickNext');
                 });
             }
+
+            // Mettre à jour les attributs data en fonction des options actuelles
+            function updateDataAttributes() {
+                const slickObj = $slider.slick('getSlick');
+                const responsive = slickObj.options.responsive || [];
+                let currentSettings = slickObj.options;
+
+                // Trouver les paramètres actuels en fonction du breakpoint
+                const currentWidth = window.innerWidth;
+                for (let i = 0; i < responsive.length; i++) {
+                    if (currentWidth <= responsive[i].breakpoint) {
+                        currentSettings = responsive[i].settings;
+                    }
+                }
+
+                // Mettre à jour les attributs data
+                sliderWrapper.dataset.showArrows = currentSettings.arrows !== false;
+                sliderWrapper.dataset.showDots = currentSettings.dots !== false;
+            }
+
+            // Mettre à jour les attributs au chargement
+            updateDataAttributes();
+
+            // Mettre à jour les attributs lors des changements de breakpoint
+            $slider.on('breakpoint', function(event, slick, breakpoint) {
+                updateDataAttributes();
+            });
 
             console.log('Slider initialized successfully');
         } catch (e) {
