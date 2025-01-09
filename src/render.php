@@ -83,9 +83,34 @@ $initial_styles[] = sprintf('--desktop-gap: %dpx', $gap);
 $initial_styles[] = sprintf('--desktop-object-fit: %s', esc_attr($objectFit));
 
 $style_string = implode('; ', $initial_styles);
+
+// Get arrow SVG content based on type
+$arrow_type = $attributes['arrowType'] ?? 'type1';
+$arrow_position = $attributes['arrowPosition'] ?? 'outside';
+
+$left_arrow_path = plugin_dir_path(__DIR__) . 'assets/arrows/' . $arrow_type . '/arrow-left.svg';
+$right_arrow_path = plugin_dir_path(__DIR__) . 'assets/arrows/' . $arrow_type . '/arrow-right.svg';
+
+$left_arrow = file_exists($left_arrow_path) ? file_get_contents($left_arrow_path) : '';
+$right_arrow = file_exists($right_arrow_path) ? file_get_contents($right_arrow_path) : '';
+
+// Apply filters to allow customization of arrows
+$left_arrow = apply_filters('bk_slider_arrow_left_' . $arrow_type, $left_arrow);
+$right_arrow = apply_filters('bk_slider_arrow_right_' . $arrow_type, $right_arrow);
 ?>
 
-<div class="wp-block-up-bk-slick-slider">
+<div class="wp-block-up-bk-slick-slider" data-arrow-position="<?php echo esc_attr($arrow_position); ?>">
+    <?php if (!empty($attributes['arrows'])): ?>
+    <div class="wp-block-up-bk-slick-slider__nav">
+        <div class="wp-block-up-bk-slick-slider__nav__arrow wp-block-up-bk-slick-slider__nav__arrow--prev">
+            <?php echo $left_arrow; ?>
+        </div>
+        <div class="wp-block-up-bk-slick-slider__nav__arrow wp-block-up-bk-slick-slider__nav__arrow--next">
+            <?php echo $right_arrow; ?>
+        </div>
+    </div>
+    <?php endif; ?>
+    
     <div class="slick-slider" 
         data-slick='<?php echo wp_json_encode($slick_options); ?>'
         style="<?php echo $style_string; ?>">
