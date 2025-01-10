@@ -283,7 +283,12 @@ export default function Edit({ attributes, setAttributes }) {
                         onChange={(value) => setAttributes({ fixedHeight: value })}
                     />
                     {fixedHeight && (
-                        <>
+                        <div style={{
+                            backgroundColor: '#f5f5f5',
+                            padding: '16px',
+                            borderRadius: '4px',
+                            marginBottom: '16px'
+                        }}>
                             <TextControl
                                 label={__('Slide Height', 'up-bk-slick-slider')}
                                 help={__('Enter a value with unit (e.g., 400px, 50vh, etc.)', 'up-bk-slick-slider')}
@@ -297,19 +302,19 @@ export default function Edit({ attributes, setAttributes }) {
                                 checked={variableWidth}
                                 onChange={(value) => setAttributes({ variableWidth: value })}
                             />
-                        {!variableWidth && (
-                            <SelectControl
-                                label={__('Image Fit', 'up-bk-slick-slider')}
-                                value={objectFit}
-                                options={[
-                                    { label: __('Cover - Fill the space', 'up-bk-slick-slider'), value: 'cover' },
-                                    { label: __('Contain - Show entire image', 'up-bk-slick-slider'), value: 'contain' },
-                                ]}
-                                onChange={(value) => setAttributes({ objectFit: value })}
-                                help={__('Choose how the image should fit within the slide', 'up-bk-slick-slider')}
-                            />
-                        )}
-                        </>
+                            {!variableWidth && (
+                                <SelectControl
+                                    label={__('Image Fit', 'up-bk-slick-slider')}
+                                    value={objectFit}
+                                    options={[
+                                        { label: __('Cover - Fill the space', 'up-bk-slick-slider'), value: 'cover' },
+                                        { label: __('Contain - Show entire image', 'up-bk-slick-slider'), value: 'contain' },
+                                    ]}
+                                    onChange={(value) => setAttributes({ objectFit: value })}
+                                    help={__('Choose how the image should fit within the slide', 'up-bk-slick-slider')}
+                                />
+                            )}
+                        </div>
                     )}
 
                 </PanelBody>
@@ -633,7 +638,8 @@ export default function Edit({ attributes, setAttributes }) {
             </InspectorControls>
 
             <div 
-                className="wp-block-up-bk-slick-slider-editor"
+                {...blockProps}
+                className={`wp-block-up-bk-slick-slider-editor${blockProps.className ? ' ' + blockProps.className : ''}`}
                 data-arrow-position={arrowPosition}
                 style={{
                     '--nav-icon-size': navIconSize,
@@ -641,6 +647,7 @@ export default function Edit({ attributes, setAttributes }) {
                     '--nav-radius': navRadius,
                     '--nav-padding': `${navPadding}em`,
                     '--slide-gap': `${gap}px`,
+                    ...blockProps.style
                 }}
             >
                 <div className="slider-preview">

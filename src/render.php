@@ -107,11 +107,15 @@ $right_arrow = file_exists($right_arrow_path) ? file_get_contents($right_arrow_p
 // Apply filters to allow customization of arrows
 $left_arrow = apply_filters('bk_slider_arrow_left_' . $arrow_type, $left_arrow);
 $right_arrow = apply_filters('bk_slider_arrow_right_' . $arrow_type, $right_arrow);
-?>
 
-<div class="wp-block-up-bk-slick-slider" 
-    data-arrow-position="<?php echo esc_attr($arrow_position); ?>"
-    <?php echo $nav_styles; ?>>
+// Get block alignment class
+$wrapper_attributes = get_block_wrapper_attributes([
+    'class' => 'wp-block-up-bk-slick-slider',
+    'data-arrow-position' => $arrow_position,
+]);
+
+?>
+<div <?php echo $wrapper_attributes; ?> <?php echo $nav_styles; ?>>
     <div class="wp-block-up-bk-slick-slider__nav">
         <div class="wp-block-up-bk-slick-slider__nav__arrow wp-block-up-bk-slick-slider__nav__arrow--prev">
             <?php echo $left_arrow; ?>
