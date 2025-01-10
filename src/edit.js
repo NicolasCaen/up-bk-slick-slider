@@ -20,6 +20,8 @@ import { useEffect, useState } from '@wordpress/element';
 import apiFetch from '@wordpress/api-fetch';
 import './editor.scss';
 
+const ALLOWED_MEDIA_TYPES = ['image'];
+
 export default function Edit({ attributes, setAttributes }) {
     const {
         slides,
@@ -57,6 +59,17 @@ export default function Edit({ attributes, setAttributes }) {
     const [tabletPanelOpen, setTabletPanelOpen] = useState(false);
     const [mobilePanelOpen, setMobilePanelOpen] = useState(false);
     const [forceUpdate, setForceUpdate] = useState(0);
+    const [isEditingGallery, setIsEditingGallery] = useState(false);
+    const [mediaArray, setMediaArray] = useState(slides);
+    const [startIndex, setStartIndex] = useState(0);
+
+    const handlePrevClick = () => {
+        setStartIndex(prev => Math.max(0, prev - slidesToShow));
+    };
+
+    const handleNextClick = () => {
+        setStartIndex(prev => Math.min(mediaArray.length - slidesToShow, prev + slidesToShow));
+    };
 
     // Récupérer l'ID du post courant
     const postId = useSelect((select) => {
@@ -94,6 +107,7 @@ export default function Edit({ attributes, setAttributes }) {
             alt: image.alt || '',
         }));
         setAttributes({ slides: newSlides });
+        setMediaArray(newSlides);
     };
 
     const updateBreakpointSetting = (device, field, value) => {
@@ -218,11 +232,7 @@ export default function Edit({ attributes, setAttributes }) {
                         checked={centerMode}
                         onChange={(value) => setAttributes({ centerMode: value })}
                     />
-                    <ToggleControl
-                        label={__('Variable Width', 'up-bk-slick-slider')}
-                        checked={variableWidth}
-                        onChange={(value) => setAttributes({ variableWidth: value })}
-                    />
+
                     <ToggleControl
                         label={__('Adaptive Height', 'up-bk-slick-slider')}
                         checked={adaptiveHeight}
@@ -257,34 +267,6 @@ export default function Edit({ attributes, setAttributes }) {
                         max={8}
                         step={1}
                     />
-                    
-                            <ToggleControl
-                        label={__('Fixed Height', 'up-bk-slick-slider')}
-                        help={__('Enable to set a fixed height for all slides', 'up-bk-slick-slider')}
-                        checked={fixedHeight}
-                        onChange={(value) => setAttributes({ fixedHeight: value })}
-                    />
-                                        {fixedHeight && (
-                        <>
-                            <TextControl
-                                label={__('Slide Height', 'up-bk-slick-slider')}
-                                help={__('Enter a value with unit (e.g., 400px, 50vh, etc.)', 'up-bk-slick-slider')}
-                                value={slideHeight}
-                                onChange={(value) => setAttributes({ slideHeight: value })}
-                                placeholder="400px"
-                            />
-                            <SelectControl
-                                label={__('Image Fit', 'up-bk-slick-slider')}
-                                value={objectFit}
-                                options={[
-                                    { label: __('Cover - Fill the space', 'up-bk-slick-slider'), value: 'cover' },
-                                    { label: __('Contain - Show entire image', 'up-bk-slick-slider'), value: 'contain' },
-                                ]}
-                                onChange={(value) => setAttributes({ objectFit: value })}
-                                help={__('Choose how the image should fit within the slide', 'up-bk-slick-slider')}
-                            />
-                        </>
-                    )}
                     <RangeControl
                         label={__('Gap between slides', 'up-bk-slick-slider')}
                         value={gap}
@@ -293,6 +275,48 @@ export default function Edit({ attributes, setAttributes }) {
                         max={300}
                         step={1}
                     />
+                    
+                    <ToggleControl
+                        label={__('Fixed Height', 'up-bk-slick-slider')}
+                        help={__('Enable to set a fixed height for all slides', 'up-bk-slick-slider')}
+                        checked={fixedHeight}
+                        onChange={(value) => setAttributes({ fixedHeight: value })}
+                    />
+                    {fixedHeight && (
+                        <div style={{
+                            backgroundColor: '#f5f5f5',
+                            padding: '16px',
+                            borderRadius: '4px',
+                            marginBottom: '16px'
+                        }}>
+                            <TextControl
+                                label={__('Slide Height', 'up-bk-slick-slider')}
+                                help={__('Enter a value with unit (e.g., 400px, 50vh, etc.)', 'up-bk-slick-slider')}
+                                value={slideHeight}
+                                onChange={(value) => setAttributes({ slideHeight: value })}
+                                placeholder="400px"
+                            />
+                            <ToggleControl
+                                label={__('Variable Width', 'up-bk-slick-slider')}
+                                help={__('Enable to allow slides to have variable widths. Useful for content with different sizes.', 'up-bk-slick-slider')}
+                                checked={variableWidth}
+                                onChange={(value) => setAttributes({ variableWidth: value })}
+                            />
+                            {!variableWidth && (
+                                <SelectControl
+                                    label={__('Image Fit', 'up-bk-slick-slider')}
+                                    value={objectFit}
+                                    options={[
+                                        { label: __('Cover - Fill the space', 'up-bk-slick-slider'), value: 'cover' },
+                                        { label: __('Contain - Show entire image', 'up-bk-slick-slider'), value: 'contain' },
+                                    ]}
+                                    onChange={(value) => setAttributes({ objectFit: value })}
+                                    help={__('Choose how the image should fit within the slide', 'up-bk-slick-slider')}
+                                />
+                            )}
+                        </div>
+                    )}
+
                 </PanelBody>
 
                 <PanelBody title={__('Responsive Settings', 'up-bk-slick-slider')} initialOpen={false}>
@@ -549,7 +573,7 @@ export default function Edit({ attributes, setAttributes }) {
                     )}
                 </PanelBody>
                 <PanelBody 
-                    title={__('Navigation', 'up-bk-slick-slider')}
+                    title={__('Navigation Settings', 'up-bk-slick-slider')}
                     initialOpen={false}
                 >
                     <ToggleControl
@@ -560,41 +584,40 @@ export default function Edit({ attributes, setAttributes }) {
                     {arrows && (
                         <>
                             <SelectControl
-                                label={__('Arrow position', 'up-bk-slick-slider')}
+                                label={__('Arrow Type', 'up-bk-slick-slider')}
+                                value={arrowType}
+                                options={arrowTypes}
+                                onChange={(value) => setAttributes({ arrowType: value })}
+                            />
+                            <SelectControl
+                                label={__('Arrow Position', 'up-bk-slick-slider')}
                                 value={arrowPosition}
-                                options={[
-                                    { label: __('Sides', 'up-bk-slick-slider'), value: 'sides' },
-                                    { label: __('Bottom', 'up-bk-slick-slider'), value: 'bottom' },
-                                ]}
+                                options={arrowPositions}
                                 onChange={(value) => setAttributes({ arrowPosition: value })}
                             />
-                            <TextControl
-                                label={__('Icon Size', 'up-bk-slick-slider')}
-                                value={navIconSize}
-                                onChange={(value) => {
-                                    // Ajout automatique de 'px' si aucune unité n'est spécifiée
-                                    const size = /\d+$/.test(value) ? value + 'px' : value;
-                                    setAttributes({ navIconSize: size });
-                                }}
-                                help={__('Add unit (px, em, rem) or it will default to px', 'up-bk-slick-slider')}
+                            <RangeControl
+                                label={__('Icon Size (rem)', 'up-bk-slick-slider')}
+                                value={parseFloat(navIconSize)}
+                                onChange={(value) => setAttributes({ navIconSize: `${value}rem` })}
+                                min={0.5}
+                                max={5}
+                                step={0.1}
                             />
                             <RangeControl
-                                label={__('Gap between arrows (em)', 'up-bk-slick-slider')}
+                                label={__('Gap (em)', 'up-bk-slick-slider')}
                                 value={navGap}
                                 onChange={(value) => setAttributes({ navGap: value })}
                                 min={0}
                                 max={5}
                                 step={0.1}
                             />
-                            <TextControl
-                                label={__('Border Radius', 'up-bk-slick-slider')}
-                                value={navRadius}
-                                onChange={(value) => {
-                                    // Ajout automatique de 'px' si aucune unité n'est spécifiée
-                                    const radius = /\d+$/.test(value) ? value + 'px' : value;
-                                    setAttributes({ navRadius: radius });
-                                }}
-                                help={__('Add unit (px, %, em) or it will default to px', 'up-bk-slick-slider')}
+                            <RangeControl
+                                label={__('Border Radius (rem)', 'up-bk-slick-slider')}
+                                value={parseFloat(navRadius)}
+                                onChange={(value) => setAttributes({ navRadius: `${value}rem` })}
+                                min={0}
+                                max={5}
+                                step={0.1}
                             />
                             <RangeControl
                                 label={__('Padding (em)', 'up-bk-slick-slider')}
@@ -614,56 +637,92 @@ export default function Edit({ attributes, setAttributes }) {
                 </PanelBody>
             </InspectorControls>
 
-            <div className="wp-block-up-bk-slick-slider-editor">
-                {!slides.length ? (
-                    <MediaUploadCheck>
-                        <MediaUpload
+            <div 
+                {...blockProps}
+                className={`wp-block-up-bk-slick-slider-editor${blockProps.className ? ' ' + blockProps.className : ''}`}
+                data-arrow-position={arrowPosition}
+                style={{
+                    '--nav-icon-size': navIconSize,
+                    '--nav-gap': `${navGap}em`,
+                    '--nav-radius': navRadius,
+                    '--nav-padding': `${navPadding}em`,
+                    '--slide-gap': `${gap}px`,
+                    ...blockProps.style
+                }}
+            >
+                <div className="slider-preview">
+                    {mediaArray.length === 0 ? (
+                        <MediaPlaceholder
+                            icon="format-gallery"
+                            labels={{
+                                title: __('Gallery', 'up-bk-slick-slider'),
+                                instructions: __('Drag images, upload new ones or select files from your library.', 'up-bk-slick-slider'),
+                            }}
                             onSelect={onSelectImages}
-                            allowedTypes={['image']}
-                            multiple={true}
-                            gallery={true}
-                            value={[]}
-                            render={({ open }) => (
-                                <Button
-                                    onClick={open}
-                                    variant="primary"
-                                    className="editor-post-featured-image__toggle"
-                                >
-                                    {__('Add Images', 'up-bk-slick-slider')}
-                                </Button>
-                            )}
+                            accept="image/*"
+                            allowedTypes={ALLOWED_MEDIA_TYPES}
+                            multiple
+                            value={mediaArray}
                         />
-                    </MediaUploadCheck>
-                ) : (
-                    <div className="slider-preview">
-                        {slides.map((slide, index) => (
-                            <div key={index} className="slider-preview-item">
-                                <img
-                                    src={slide.url}
-                                    alt={slide.alt}
-                                />
+                    ) : (
+                        <>
+                            <div className="slider-preview-items" style={{ 
+                                display: variableWidth ? 'flex' : 'grid',
+                                gridTemplateColumns: variableWidth ? 'none' : `repeat(${slidesToShow}, 1fr)`,
+                                gap: `var(--slide-gap)`,
+                                margin: '0 10px',
+                                overflowX: variableWidth ? 'auto' : 'hidden'
+                            }}>
+                                {mediaArray.slice(startIndex, startIndex + slidesToShow).map((img, index) => (
+                                    <div key={img.id || img.url} className="slider-preview-item" style={{
+                                        aspectRatio: fixedHeight ? 'auto' : '16/9',
+                                        height: fixedHeight ? slideHeight : 'auto',
+                                        width: variableWidth ? 'auto' : '100%',
+                                        flexShrink: variableWidth ? 0 : 1
+                                    }}>
+                                        <img
+                                            src={img.url}
+                                            alt={img.alt}
+                                            style={{
+                                                width: variableWidth ? 'auto' : '100%',
+                                                height: '100%',
+                                                objectFit: objectFit
+                                            }}
+                                        />
+                                    </div>
+                                ))}
                             </div>
-                        ))}
-                        <MediaUploadCheck>
-                            <MediaUpload
-                                onSelect={onSelectImages}
-                                allowedTypes={['image']}
-                                multiple={true}
-                                gallery={true}
-                                value={slides.map(img => img.id)}
-                                render={({ open }) => (
-                                    <Button
-                                        onClick={open}
-                                        variant="secondary"
-                                        className="edit-gallery-button"
+                            {arrows && (
+                                <div className="wp-block-up-bk-slick-slider__nav">
+                                    <div 
+                                        className={`wp-block-up-bk-slick-slider__nav__arrow wp-block-up-bk-slick-slider__nav__arrow--prev ${startIndex === 0 ? 'disabled' : ''}`}
+                                        onClick={handlePrevClick}
+                                        style={{ opacity: startIndex === 0 ? 0.5 : 1 }}
                                     >
-                                        {__('Edit Gallery', 'up-bk-slick-slider')}
-                                    </Button>
-                                )}
-                            />
-                        </MediaUploadCheck>
-                    </div>
-                )}
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+                                            <path d="M14.6 7.4L10 12l4.6 4.6L13.2 18l-6-6 6-6z"/>
+                                        </svg>
+                                    </div>
+                                    <div 
+                                        className={`wp-block-up-bk-slick-slider__nav__arrow wp-block-up-bk-slick-slider__nav__arrow--next ${startIndex >= mediaArray.length - slidesToShow ? 'disabled' : ''}`}
+                                        onClick={handleNextClick}
+                                        style={{ opacity: startIndex >= mediaArray.length - slidesToShow ? 0.5 : 1 }}
+                                    >
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+                                            <path d="M9.4 18L8 16.6l4.6-4.6L8 7.4 9.4 6l6 6z"/>
+                                        </svg>
+                                    </div>
+                                </div>
+                            )}
+                            <Button
+                                className="edit-gallery-button"
+                                onClick={() => setIsEditingGallery(true)}
+                            >
+                                {__('Edit gallery', 'up-bk-slick-slider')}
+                            </Button>
+                        </>
+                    )}
+                </div>
             </div>
         </div>
     );
