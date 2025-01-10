@@ -3,49 +3,73 @@ Contributors: GEHIN Nicolas
 Tags: block, slider, slick
 Requires at least: 6.1
 Tested up to: 6.4
-Stable tag: 1.5.0
+Stable tag: 1.6.0
 Requires PHP: 7.0
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-A WordPress block for creating beautiful sliders using Slick JS.
+Create beautiful and responsive sliders using Slick JS.
 
 == Description ==
 
-This plugin adds a Gutenberg block that allows you to create beautiful and responsive sliders using the Slick JS library.
+UP BK Slick Slider is a powerful WordPress block that allows you to create beautiful, responsive sliders using the popular Slick JS library. Perfect for showcasing images in a professional and engaging way.
 
-Features:
-* Easy-to-use interface in the Gutenberg editor
-* Multiple slides support
-* Customizable settings (autoplay, speed, arrows, dots, etc.)
-* Responsive design with breakpoint controls
-* Support for fixed height slides
-* Gap control between slides
-* Multiple arrow positions and styles
-* Dynamic visibility control for arrows and dots
+= Features =
+
+* Easy-to-use block interface
+* Responsive design
+* Multiple image sources (Media Gallery or Post Images)
+* Customizable navigation arrows and dots
+* Autoplay options
+* Variable width and fixed height options
+* Customizable slide gaps
+* Multiple slides display
+* Touch-enabled navigation
+* RTL support
+* Accessibility features
+
+= Key Settings =
+
+* Image Source Selection (Media Gallery or Post Images)
+* Autoplay with customizable speed
+* Navigation arrows with multiple styles and positions
+* Navigation dots
+* Number of slides to show and scroll
+* Slide gap adjustment
+* Fixed height option with customizable height
+* Variable width option
+* Image fit options (cover/contain)
+* Responsive breakpoints
+* Navigation customization (size, gap, radius, padding)
 
 == Installation ==
 
 1. Upload the plugin files to the `/wp-content/plugins/up-bk-slick-slider` directory, or install the plugin through the WordPress plugins screen directly.
 2. Activate the plugin through the 'Plugins' screen in WordPress
-3. Use the block editor to add the 'UP BK Slick Slider' block to your pages or posts
+3. Use the block editor to add the 'UP Slick Slider' block to your content
+4. Configure the slider settings in the block sidebar
 
 == Frequently Asked Questions ==
 
-= What settings can I customize? =
+= Can I customize the slider's appearance? =
 
-Yes, you can customize various settings in the block sidebar, including:
-* Autoplay and autoplay speed
-* Navigation arrows and dots visibility
-* Arrow position and style
-* Slide transition effects
-* Number of slides to show
-* Gap between slides
-* Fixed height option
-* Object-fit behavior
-* Responsive breakpoint settings
+Yes, the plugin offers extensive customization options including slide dimensions, navigation styles, and responsive settings.
+
+= Is the slider responsive? =
+
+Yes, the slider is fully responsive and adapts to different screen sizes.
+
+= Can I display multiple slides at once? =
+
+Yes, you can configure the slider to display multiple slides simultaneously and control how many slides to scroll at a time.
 
 == Changelog ==
+
+= 1.6.0 =
+* Amélioration : Ajout du support complet des attributs de bloc Gutenberg (styles, alignement, etc.)
+* Amélioration : Meilleure gestion des largeurs et des styles dans l'éditeur
+* Amélioration : Optimisation de l'affichage dans l'interface d'administration
+* Amélioration : Nettoyage et optimisation du code
 
 = 1.5.0 =
 * Amélioration : Gestion améliorée des flèches de navigation avec un nouveau système de positionnement
@@ -88,6 +112,9 @@ Yes, you can customize various settings in the block sidebar, including:
 
 == Upgrade Notice ==
 
+= 1.6.0 =
+This version adds post images support and improves accessibility. Update recommended for all users.
+
 = 1.5.0 =
 This version includes significant improvements to navigation arrow management, variable width support, and accessibility enhancements. Update for better control over your sliders.
 
@@ -102,3 +129,10 @@ This version includes improvements to the build process and fixes issues with th
 
 = 1.0.0 =
 Initial release of the plugin.
+
+== Screenshots ==
+
+1. Slider block in the editor
+2. Slider settings panel
+3. Frontend display example
+4. Mobile responsive view
