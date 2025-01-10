@@ -297,6 +297,7 @@ export default function Edit({ attributes, setAttributes }) {
                                 checked={variableWidth}
                                 onChange={(value) => setAttributes({ variableWidth: value })}
                             />
+                        {!variableWidth && (
                             <SelectControl
                                 label={__('Image Fit', 'up-bk-slick-slider')}
                                 value={objectFit}
@@ -307,6 +308,7 @@ export default function Edit({ attributes, setAttributes }) {
                                 onChange={(value) => setAttributes({ objectFit: value })}
                                 help={__('Choose how the image should fit within the slide', 'up-bk-slick-slider')}
                             />
+                        )}
                         </>
                     )}
 
@@ -658,21 +660,24 @@ export default function Edit({ attributes, setAttributes }) {
                     ) : (
                         <>
                             <div className="slider-preview-items" style={{ 
-                                display: 'grid',
-                                gridTemplateColumns: `repeat(${slidesToShow}, 1fr)`,
+                                display: variableWidth ? 'flex' : 'grid',
+                                gridTemplateColumns: variableWidth ? 'none' : `repeat(${slidesToShow}, 1fr)`,
                                 gap: `var(--slide-gap)`,
-                                margin: '0 10px'
+                                margin: '0 10px',
+                                overflowX: variableWidth ? 'auto' : 'hidden'
                             }}>
                                 {mediaArray.slice(startIndex, startIndex + slidesToShow).map((img, index) => (
                                     <div key={img.id || img.url} className="slider-preview-item" style={{
                                         aspectRatio: fixedHeight ? 'auto' : '16/9',
                                         height: fixedHeight ? slideHeight : 'auto',
+                                        width: variableWidth ? 'auto' : '100%',
+                                        flexShrink: variableWidth ? 0 : 1
                                     }}>
                                         <img
                                             src={img.url}
                                             alt={img.alt}
                                             style={{
-                                                width: '100%',
+                                                width: variableWidth ? 'auto' : '100%',
                                                 height: '100%',
                                                 objectFit: objectFit
                                             }}
