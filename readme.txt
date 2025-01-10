@@ -65,6 +65,9 @@ Yes, you can configure the slider to display multiple slides simultaneously and 
 
 == Changelog ==
 
+= 1.6.1 =
+* Correction d'un bug : import de  MediaPlaceholder
+
 = 1.6.0 =
 * Amélioration : Ajout du support complet des attributs de bloc Gutenberg (styles, alignement, etc.)
 * Amélioration : Meilleure gestion des largeurs et des styles dans l'éditeur

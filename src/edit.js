@@ -4,6 +4,7 @@ import {
     InspectorControls,
     MediaUpload,
     MediaUploadCheck,
+    MediaPlaceholder
 } from '@wordpress/block-editor';
 import { 
     PanelBody, 
