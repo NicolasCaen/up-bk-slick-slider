@@ -31,6 +31,8 @@ export default function Edit({ attributes, setAttributes }) {
         fixedHeight,
         slideHeight,
         objectFit,
+        aspectRatio,
+        showFigcaption,
         autoplay,
         autoplaySpeed,
         arrows,
@@ -181,6 +183,36 @@ export default function Edit({ attributes, setAttributes }) {
                             )}
                         </>
                     )}
+                </PanelBody>
+
+                <PanelBody title={__('Image Display', 'up-bk-slick-slider')} initialOpen={false}>
+                    <SelectControl
+                        label={__('Aspect Ratio', 'up-bk-slick-slider')}
+                        value={aspectRatio}
+                        options={[
+                            { label: __('Auto', 'up-bk-slick-slider'), value: 'auto' },
+                            { label: '1:1', value: '1/1' },
+                            { label: '4:3', value: '4/3' },
+                            { label: '3:2', value: '3/2' },
+                            { label: '16:9', value: '16/9' },
+                            { label: '21:9', value: '21/9' },
+                        ]}
+                        onChange={(value) => setAttributes({ aspectRatio: value })}
+                    />
+                    <SelectControl
+                        label={__('Object Fit', 'up-bk-slick-slider')}
+                        value={objectFit}
+                        options={[
+                            { label: __('Cover - Fill the space', 'up-bk-slick-slider'), value: 'cover' },
+                            { label: __('Contain - Show entire image', 'up-bk-slick-slider'), value: 'contain' },
+                        ]}
+                        onChange={(value) => setAttributes({ objectFit: value })}
+                    />
+                    <ToggleControl
+                        label={__('Show Figcaption', 'up-bk-slick-slider')}
+                        checked={!!showFigcaption}
+                        onChange={(value) => setAttributes({ showFigcaption: value })}
+                    />
                 </PanelBody>
 
                 <PanelBody title={__('Slider Settings', 'up-bk-slick-slider')} initialOpen={false}>

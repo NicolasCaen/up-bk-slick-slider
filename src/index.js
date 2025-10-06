@@ -48,6 +48,14 @@ registerBlockType('up-bk/slick-slider', {
             type: 'string',
             default: 'cover'
         },
+        aspectRatio: {
+            type: 'string',
+            default: 'auto'
+        },
+        showFigcaption: {
+            type: 'boolean',
+            default: false
+        },
         autoplay: {
             type: 'boolean',
             default: true

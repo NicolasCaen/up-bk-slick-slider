@@ -4,7 +4,7 @@
  * Description:       A WordPress block for creating beautiful sliders using Slick JS
  * Requires at least: 6.1
  * Requires PHP:      7.0
- * Version:           1.6.1
+ * Version:           1.7.0
  * Author:           GEHIN Nicolas
  * License:          GPL-2.0-or-later
  * License URI:      https://www.gnu.org/licenses/gpl-2.0.html
@@ -86,6 +86,8 @@ function up_bk_slick_slider_render_callback($attributes, $content, $block) {
     wp_enqueue_style('slick-carousel-theme');
 
     ob_start();
-    require plugin_dir_path(__FILE__) . 'build/render.php';
+    // Use source render template directly (build may not exist in some environments)
+    require plugin_dir_path(__FILE__) . 'src/render.php';
     return ob_get_clean();
 }
+

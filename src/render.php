@@ -1,6 +1,5 @@
 <?php
 /**
- * Render the slider block
  */
 
 // Extract attributes
@@ -22,13 +21,23 @@ $adaptiveHeight = filter_var($slick_attributes['adaptiveHeight'] ?? false, FILTE
 $pauseOnHover = filter_var($slick_attributes['pauseOnHover'] ?? true, FILTER_VALIDATE_BOOLEAN);
 $swipe = filter_var($slick_attributes['swipe'] ?? true, FILTER_VALIDATE_BOOLEAN);
 $responsive = filter_var($slick_attributes['responsive'] ?? true, FILTER_VALIDATE_BOOLEAN);
-
-// Dimension settings
 $fixedHeight = filter_var($slick_attributes['fixedHeight'] ?? false, FILTER_VALIDATE_BOOLEAN);
 $slideHeight = $slick_attributes['slideHeight'] ?? '400px';
 $objectFit = $slick_attributes['objectFit'] ?? 'cover';
 $gap = intval($slick_attributes['gap'] ?? 0);
+// New block attributes
+$aspectRatioAttr = $slick_attributes['aspectRatio'] ?? 'auto';
+$showFigcaptionAttr = filter_var($slick_attributes['showFigcaption'] ?? false, FILTER_VALIDATE_BOOLEAN);
 
+// Prepare aspect ratio style if any (from block attribute)
+$aspect_ratio_style = '';
+if (!empty($aspectRatioAttr) && $aspectRatioAttr !== 'auto') {
+    // Expect values like "1/1", "4/3", "16/9" -> convert to "1 / 1"
+    $parts = explode('/', $aspectRatioAttr);
+    if (count($parts) === 2 && is_numeric($parts[0]) && is_numeric($parts[1])) {
+        $aspect_ratio_style = sprintf('aspect-ratio: %d / %d;', intval($parts[0]), intval($parts[1]));
+    }
+}
 // Prepare slick options
 $slick_options = [
     'autoplay' => $autoplay,
@@ -50,28 +59,30 @@ $slick_options = [
 // Add responsive settings
 if ($responsive && !empty($slick_attributes['breakpoints'])) {
     $responsive_array = [];
-    
-    // Format for tablet
+
+    // Tablet
     if (!empty($slick_attributes['breakpoints']['tablet']['settings'])) {
         $tablet_settings = $slick_attributes['breakpoints']['tablet']['settings'];
         $tablet_settings['gap'] = intval($tablet_settings['gap'] ?? $gap);
         $responsive_array[] = [
             'breakpoint' => 1024,
-            'settings' => $tablet_settings
+            'settings' => $tablet_settings,
         ];
     }
-    
-    // Format for mobile
+
+    // Mobile
     if (!empty($slick_attributes['breakpoints']['mobile']['settings'])) {
         $mobile_settings = $slick_attributes['breakpoints']['mobile']['settings'];
         $mobile_settings['gap'] = intval($mobile_settings['gap'] ?? $gap);
         $responsive_array[] = [
             'breakpoint' => 480,
-            'settings' => $mobile_settings
+            'settings' => $mobile_settings,
         ];
     }
-    
-    $slick_options['responsive'] = $responsive_array;
+
+    if (!empty($responsive_array)) {
+        $slick_options['responsive'] = $responsive_array;
+    }
 }
 
 $slides = !empty($slick_attributes['slides']) ? $slick_attributes['slides'] : [];
@@ -84,7 +95,9 @@ if ($fixedHeight) {
 $initial_styles[] = sprintf('--desktop-gap: %dpx', $gap);
 $initial_styles[] = sprintf('--desktop-object-fit: %s', esc_attr($objectFit));
 
+// Inline style string used on the slider container
 $style_string = implode('; ', $initial_styles);
+
 
 // Get arrow SVG content based on type
 $arrow_type = $attributes['arrowType'] ?? 'type1';
@@ -102,9 +115,8 @@ $left_arrow_path = plugin_dir_path(__DIR__) . 'assets/arrows/' . $arrow_type . '
 $right_arrow_path = plugin_dir_path(__DIR__) . 'assets/arrows/' . $arrow_type . '/arrow-right.svg';
 
 $left_arrow = file_exists($left_arrow_path) ? file_get_contents($left_arrow_path) : '';
-$right_arrow = file_exists($right_arrow_path) ? file_get_contents($right_arrow_path) : '';
 
-// Apply filters to allow customization of arrows
+// Filters to customize arrows
 $left_arrow = apply_filters('bk_slider_arrow_left_' . $arrow_type, $left_arrow);
 $right_arrow = apply_filters('bk_slider_arrow_right_' . $arrow_type, $right_arrow);
 
@@ -125,21 +137,45 @@ $wrapper_attributes = get_block_wrapper_attributes([
             <?php echo $right_arrow; ?>
             <span class="screen-reader-text"><?php echo esc_html__('Next slide', 'up-bk-slick-slider'); ?></span>
         </div>
+
     </div>
-    
-    <div class="slick-slider<?php echo $fixedHeight ? ' fixed-height' : ''; ?>" 
+
+    <div class="slick-slider<?php echo $fixedHeight ? ' fixed-height' : ''; ?>"
         role="region"
         aria-label="<?php echo esc_attr__('Image Slider', 'up-bk-slick-slider'); ?>"
         data-slick='<?php echo wp_json_encode($slick_options); ?>'
         style="<?php echo $style_string; ?>">
         <?php foreach ($slides as $slide) : ?>
+            <?php
+                $img_id = isset($slide['id']) ? intval($slide['id']) : 0;
+                $img_url = isset($slide['url']) ? $slide['url'] : '';
+                $img_alt = isset($slide['alt']) ? $slide['alt'] : '';
+                $caption = '';
+                if ($showFigcaptionAttr && $img_id) {
+                    $caption = wp_get_attachment_caption($img_id);
+                    if (!$caption) {
+                        $attachment = get_post($img_id);
+                        if ($attachment) {
+                            $caption = $attachment->post_excerpt ?: $attachment->post_title;
+                        }
+                    }
+                }
+                $img_style = trim($aspect_ratio_style . ' object-fit: ' . esc_attr($objectFit) . ';');
+            ?>
             <div class="slick-slide-item" tabindex="-1">
-                <img 
-                    src="<?php echo esc_url($slide['url']); ?>" 
-                    alt="<?php echo esc_attr($slide['alt']); ?>"
-                    decoding="async"
-                />
+                <figure class="slick-slide-figure" style="<?php echo esc_attr($aspect_ratio_style); ?>">
+                    <img 
+                        src="<?php echo esc_url($img_url); ?>" 
+                        alt="<?php echo esc_attr($img_alt); ?>"
+                        decoding="async"
+                        style="<?php echo esc_attr($img_style); ?>"
+                    />
+                    <?php if ($showFigcaptionAttr && !empty($caption)) : ?>
+                        <figcaption class="slick-slide-caption"><?php echo esc_html($caption); ?></figcaption>
+                    <?php endif; ?>
+                </figure>
             </div>
         <?php endforeach; ?>
     </div>
 </div>
+
