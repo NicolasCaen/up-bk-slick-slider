@@ -89,6 +89,24 @@
                 height: 100%;
                 border-radius: 4px;
             }
+
+            // Inline caption editor overlay in preview
+            figcaption {
+                position: absolute;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                padding: 6px 8px;
+                background: rgba(0, 0, 0, 0.6);
+                color: #fff;
+                font-size: 12px;
+                line-height: 1.4;
+                z-index: 30; // above nav overlay
+                min-height: 28px;
+                display: flex;
+                align-items: center;
+                pointer-events: auto; // allow editing clicks
+            }
         }
 
         .edit-gallery-button {

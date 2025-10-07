@@ -4,7 +4,8 @@ import {
     InspectorControls,
     MediaUpload,
     MediaUploadCheck,
-    MediaPlaceholder
+    MediaPlaceholder,
+    RichText
 } from '@wordpress/block-editor';
 import { 
     PanelBody, 
@@ -17,7 +18,7 @@ import {
     Notice
 } from '@wordpress/components';
 import { useSelect } from '@wordpress/data';
-import { useEffect, useState } from '@wordpress/element';
+import { useEffect, useState, useRef } from '@wordpress/element';
 import apiFetch from '@wordpress/api-fetch';
 import './editor.scss';
 
@@ -68,6 +69,21 @@ export default function Edit({ attributes, setAttributes }) {
     const [isEditingGallery, setIsEditingGallery] = useState(false);
     const [mediaArray, setMediaArray] = useState(slides);
     const [startIndex, setStartIndex] = useState(0);
+    const captionSaveTimers = useRef({});
+
+    const saveCaptionToMedia = (attachmentId, value) => {
+        if (!attachmentId) return;
+        // debounce per attachment id
+        const timers = captionSaveTimers.current;
+        if (timers[attachmentId]) clearTimeout(timers[attachmentId]);
+        timers[attachmentId] = setTimeout(() => {
+            apiFetch({
+                path: `/wp/v2/media/${attachmentId}`,
+                method: 'POST',
+                data: { caption: value }
+            }).catch(() => {/* silent */});
+        }, 600);
+    };
 
     const handlePrevClick = () => {
         setStartIndex(prev => Math.max(0, prev - slidesToShow));
@@ -103,6 +119,7 @@ export default function Edit({ attributes, setAttributes }) {
                     id: item.id,
                     url: item.source_url,
                     alt: item.alt_text || '',
+                    caption: (item.caption && (item.caption.raw || item.caption.rendered)) ? (item.caption.raw || item.caption.rendered) : ''
                 }));
                 setAttachments(images);
             });
@@ -121,6 +138,7 @@ export default function Edit({ attributes, setAttributes }) {
             id: image.id,
             url: image.url,
             alt: image.alt || '',
+            caption: image?.caption?.raw || image?.caption?.rendered || ''
         }));
         setAttributes({ slides: newSlides });
         setMediaArray(newSlides);
@@ -154,7 +172,7 @@ export default function Edit({ attributes, setAttributes }) {
             // preserve order of ids
             const slidesFromIds = uniqueIds.map(id => {
                 const m = media.find(item => item.id === id);
-                return m ? { id: m.id, url: m.source_url, alt: m.alt_text || '' } : null;
+                return m ? { id: m.id, url: m.source_url, alt: m.alt_text || '', caption: (m.caption && (m.caption.raw || m.caption.rendered)) ? (m.caption.raw || m.caption.rendered) : '' } : null;
             }).filter(Boolean);
             if (!slidesFromIds.length) return;
             setAttributes({ imageSource: 'gallery', slides: slidesFromIds });
@@ -803,7 +821,8 @@ export default function Edit({ attributes, setAttributes }) {
                                     overflow: 'hidden'
                                 }}>
                                     {Array.from({ length: Math.max(1, slidesToShow) + 1 }).map((_, idx) => {
-                                        const img = mediaArray[(startIndex + idx) % mediaArray.length];
+                                        const absIndex = (startIndex + idx) % mediaArray.length;
+                                        const img = mediaArray[absIndex];
                                         return (
                                             <div key={(img && (img.id || img.url)) || idx} className="slider-preview-item" style={{
                                                 aspectRatio: fixedHeight ? 'auto' : (aspectRatio && aspectRatio !== 'auto' ? aspectRatio.replace('/', ' / ') : '16/9'),
@@ -811,26 +830,45 @@ export default function Edit({ attributes, setAttributes }) {
                                                 width: `calc((100% - (var(--slide-gap) * ${Math.max(0, slidesToShow - 1)})) / ${Math.max(1, slidesToShow)})`,
                                                 flex: '0 0 auto'
                                             }}>
-                                                {img ? (
-                                                    <img
-                                                        src={img.url}
-                                                        alt={img.alt}
-                                                        style={{
-                                                            width: '100%',
-                                                            height: '100%',
-                                                            objectFit: objectFit
-                                                        }}
-                                                    />
-                                                ) : null}
+                                                {img && (
+                                                    <>
+                                                        <img
+                                                            src={img.url}
+                                                            alt={img.alt}
+                                                            style={{
+                                                                width: '100%',
+                                                                height: '100%',
+                                                                objectFit: objectFit
+                                                            }}
+                                                        />
+                                                        {showFigcaption && (
+                                                            <RichText
+                                                                tagName="figcaption"
+                                                                placeholder={__('Write caption…', 'up-bk-slick-slider')}
+                                                                value={img.caption || ''}
+                                                                onChange={(value) => {
+                                                                    const newSlides = [...(slides || [])];
+                                                                    const newMedia = [...(mediaArray || [])];
+                                                                    if (newSlides[absIndex]) newSlides[absIndex] = { ...newSlides[absIndex], caption: value };
+                                                                    if (newMedia[absIndex]) newMedia[absIndex] = { ...newMedia[absIndex], caption: value };
+                                                                    setAttributes({ slides: newSlides });
+                                                                    setMediaArray(newMedia);
+                                                                    if (img.id) {
+                                                                        saveCaptionToMedia(img.id, value);
+                                                                    }
+                                                                }}
+                                                            />
+                                                        )}
+                                                    </>
+                                                )}
                                             </div>
-                                        );
-                                    })}
-                                </div>
+                                            );
+                                        })}
+                                    </div>
                                 <MediaUploadCheck>
                                     <MediaUpload
                                         onSelect={onSelectImages}
                                         allowedTypes={ALLOWED_MEDIA_TYPES}
-                                        multiple
                                         gallery
                                         value={mediaArray.map(img => img.id).filter(Boolean)}
                                         render={({ open }) => (
