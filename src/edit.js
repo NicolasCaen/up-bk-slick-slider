@@ -27,10 +27,12 @@ export default function Edit({ attributes, setAttributes }) {
     const {
         slides,
         imageSource,
+        metaKey,
         gap,
         fixedHeight,
         slideHeight,
         objectFit,
+        imageSize,
         aspectRatio,
         showFigcaption,
         autoplay,
@@ -145,6 +147,7 @@ export default function Edit({ attributes, setAttributes }) {
                         options={[
                             { label: __('Custom Gallery', 'up-bk-slick-slider'), value: 'gallery' },
                             { label: __('Post Images', 'up-bk-slick-slider'), value: 'post' },
+                            { label: __('Meta (IDs CSV)', 'up-bk-slick-slider'), value: 'meta' },
                         ]}
                         onChange={(value) => setAttributes({ imageSource: value })}
                     />
@@ -183,9 +186,32 @@ export default function Edit({ attributes, setAttributes }) {
                             )}
                         </>
                     )}
+
+                    {imageSource === 'meta' && (
+                        <TextControl
+                            label={__('Meta key (slug)', 'up-bk-slick-slider')}
+                            help={__('Enter a post meta key containing a comma-separated list of image IDs, e.g., "123,456,789". Each number must be a valid attachment ID.', 'up-bk-slick-slider')}
+                            value={metaKey || ''}
+                            onChange={(value) => setAttributes({ metaKey: value })}
+                            placeholder="_my_image_ids"
+                        />
+                    )}
                 </PanelBody>
 
                 <PanelBody title={__('Image Display', 'up-bk-slick-slider')} initialOpen={false}>
+                    <SelectControl
+                        label={__('Image Size', 'up-bk-slick-slider')}
+                        value={imageSize || 'full'}
+                        options={[
+                            { label: 'Full', value: 'full' },
+                            { label: 'Large', value: 'large' },
+                            { label: 'Medium Large', value: 'medium_large' },
+                            { label: 'Medium', value: 'medium' },
+                            { label: 'Thumbnail', value: 'thumbnail' },
+                        ]}
+                        onChange={(value) => setAttributes({ imageSize: value })}
+                        help={__('Choose the registered WordPress image size to output', 'up-bk-slick-slider')}
+                    />
                     <SelectControl
                         label={__('Aspect Ratio', 'up-bk-slick-slider')}
                         value={aspectRatio}

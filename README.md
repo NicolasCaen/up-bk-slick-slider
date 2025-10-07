@@ -11,6 +11,8 @@ Un bloc de diaporama moderne, accessible et responsive pour l'éditeur WordPress
 - 🎨 Flèches de navigation et points personnalisables
 - 🔄 Animations de défilement fluides
 - ⚡ Performance optimisée
+- 🧷 Nouvelle source d'images « Meta » (IDs d'images séparés par des virgules)
+- 🧩 Choix de la taille d'image WordPress (full, large, medium_large, medium, thumbnail)
 
 ## Installation
 
@@ -76,6 +78,20 @@ up-bk-slick-slider/
    - Flèches de navigation
    - Navigation par points
    - Points de rupture responsive
+   - Source d'images: « Galerie », « Images du post », ou « Meta (IDs CSV) »
+   - Taille d'image: sélectionnez parmi les tailles WordPress enregistrées
+
+### Source « Meta (IDs CSV) »
+
+- Sélectionnez « Meta (IDs CSV) » comme source d'images.
+- Renseignez la clé meta du post (slug) dans le champ « Meta key (slug) ».
+- La meta doit contenir une liste d'IDs d'images séparés par des virgules, par exemple: `123,456,789`.
+- Chaque ID doit correspondre à une pièce jointe (attachment) image valide.
+
+### Taille d'image
+
+- Dans « Image Display » choisissez la taille d'image à utiliser: `full`, `large`, `medium_large`, `medium`, `thumbnail`.
+- Le front utilise `wp_get_attachment_image_url(ID, size)` lorsque l'ID est disponible.
 
 ## Contribution
 
@@ -98,3 +114,7 @@ Ce projet est sous licence GPL v2 ou ultérieure - voir le fichier [LICENSE](LIC
 ## Support
 
 Pour obtenir de l'aide, veuillez [ouvrir un ticket](url-des-issues) sur GitHub ou nous contacter via notre site web.
+
+## Changelog
+
+Consultez le fichier [CHANGELOG.md](CHANGELOG.md) pour la liste détaillée des modifications.

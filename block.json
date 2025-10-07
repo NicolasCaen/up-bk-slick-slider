@@ -29,6 +29,10 @@
             "type": "string",
             "default": "gallery"
         },
+        "metaKey": {
+            "type": "string",
+            "default": ""
+        },
         "gap": {
             "type": "number",
             "default": 0
@@ -44,6 +48,10 @@
         "objectFit": {
             "type": "string",
             "default": "cover"
+        },
+        "imageSize": {
+            "type": "string",
+            "default": "full"
         },
         "aspectRatio": {
             "type": "string",

@@ -5,11 +5,18 @@
 // Extract attributes
 $slick_attributes = $attributes ?? [];
 
+// Current post ID (needed for meta source)
+$post_id = 0;
+if (!empty($block) && isset($block->context['postId'])) {
+    $post_id = intval($block->context['postId']);
+} elseif (function_exists('get_the_ID')) {
+    $post_id = intval(get_the_ID());
+}
 // Base settings
 $autoplay = filter_var($slick_attributes['autoplay'] ?? true, FILTER_VALIDATE_BOOLEAN);
 $autoplaySpeed = intval($slick_attributes['autoplaySpeed'] ?? 3000);
 $arrows = filter_var($slick_attributes['arrows'] ?? true, FILTER_VALIDATE_BOOLEAN);
-$dots = filter_var($slick_attributes['dots'] ?? true, FILTER_VALIDATE_BOOLEAN);
+$dots = filter_var($slick_attributes['dots'] ?? true, false);
 $infinite = filter_var($slick_attributes['infinite'] ?? true, FILTER_VALIDATE_BOOLEAN);
 $speed = intval($slick_attributes['speed'] ?? 500);
 $slidesToShow = intval($slick_attributes['slidesToShow'] ?? 1);
@@ -24,6 +31,7 @@ $responsive = filter_var($slick_attributes['responsive'] ?? true, FILTER_VALIDAT
 $fixedHeight = filter_var($slick_attributes['fixedHeight'] ?? false, FILTER_VALIDATE_BOOLEAN);
 $slideHeight = $slick_attributes['slideHeight'] ?? '400px';
 $objectFit = $slick_attributes['objectFit'] ?? 'cover';
+$imageSize = $slick_attributes['imageSize'] ?? 'full';
 $gap = intval($slick_attributes['gap'] ?? 0);
 // New block attributes
 $aspectRatioAttr = $slick_attributes['aspectRatio'] ?? 'auto';
@@ -87,6 +95,36 @@ if ($responsive && !empty($slick_attributes['breakpoints'])) {
 
 $slides = !empty($slick_attributes['slides']) ? $slick_attributes['slides'] : [];
 
+// If image source is meta, read IDs from the specified meta key (CSV of IDs)
+if (($slick_attributes['imageSource'] ?? '') === 'meta') {
+    $meta_key = isset($slick_attributes['metaKey']) ? trim((string) $slick_attributes['metaKey']) : '';
+    if ($meta_key !== '' && $post_id) {
+        $raw = get_post_meta($post_id, $meta_key, true);
+     
+        if (is_string($raw) && $raw !== '') {
+            $id_list = array_map('trim', explode(',', $raw));
+            $ids = array_filter(array_map('intval', $id_list));
+           
+            if (!empty($ids)) {
+                $built = [];
+                foreach ($ids as $aid) {
+                    $url = wp_get_attachment_url($aid);
+                    if (!$url) { continue; }
+                    $alt = get_post_meta($aid, '_wp_attachment_image_alt', true);
+                    $built[] = [
+                        'id' => $aid,
+                        'url' => $url,
+                        'alt' => is_string($alt) ? $alt : '',
+                    ];
+                }
+                if (!empty($built)) {
+                    $slides = $built;
+                }
+            }
+        }
+    }
+}
+
 // Initial styles
 $initial_styles = [];
 if ($fixedHeight) {
@@ -115,6 +153,7 @@ $left_arrow_path = plugin_dir_path(__DIR__) . 'assets/arrows/' . $arrow_type . '
 $right_arrow_path = plugin_dir_path(__DIR__) . 'assets/arrows/' . $arrow_type . '/arrow-right.svg';
 
 $left_arrow = file_exists($left_arrow_path) ? file_get_contents($left_arrow_path) : '';
+$right_arrow = file_exists($right_arrow_path) ? file_get_contents($right_arrow_path) : '';
 
 // Filters to customize arrows
 $left_arrow = apply_filters('bk_slider_arrow_left_' . $arrow_type, $left_arrow);
@@ -124,6 +163,8 @@ $right_arrow = apply_filters('bk_slider_arrow_right_' . $arrow_type, $right_arro
 $wrapper_attributes = get_block_wrapper_attributes([
     'class' => 'wp-block-up-bk-slick-slider',
     'data-arrow-position' => $arrow_position,
+    'data-show-arrows' => $arrows ? 'true' : 'false',
+    'data-show-dots' => $dots ? 'true' : 'false',
 ]);
 
 ?>
@@ -150,6 +191,12 @@ $wrapper_attributes = get_block_wrapper_attributes([
                 $img_id = isset($slide['id']) ? intval($slide['id']) : 0;
                 $img_url = isset($slide['url']) ? $slide['url'] : '';
                 $img_alt = isset($slide['alt']) ? $slide['alt'] : '';
+                if ($img_id) {
+                    $sized = wp_get_attachment_image_url($img_id, $imageSize);
+                    if ($sized) {
+                        $img_url = $sized;
+                    }
+                }
                 $caption = '';
                 if ($showFigcaptionAttr && $img_id) {
                     $caption = wp_get_attachment_caption($img_id);

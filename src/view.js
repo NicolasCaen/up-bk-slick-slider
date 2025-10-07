@@ -78,6 +78,14 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         }
 
+        // Fonction pour mettre à jour l'affichage des dots
+        function updateDotsVisibility(settings) {
+            if (settings && typeof settings.dots !== 'undefined') {
+                const showDots = settings.dots === true || settings.dots === 'true';
+                sliderWrapper.setAttribute('data-show-dots', showDots);
+            }
+        }
+
         // Fonction pour mettre à jour les options en fonction de la taille de l'écran
         function updateResponsiveSettings() {
             const $slider = jQuery(slider);
@@ -85,6 +93,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 const currentSettings = $slider.slick('slickGetOption', null);
                 updateArrowsVisibility({
                     arrows: currentSettings.arrows
+                });
+                updateDotsVisibility({
+                    dots: currentSettings.dots
                 });
             }
         }
@@ -122,6 +133,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Initialiser l'affichage des flèches avec les options par défaut
         updateArrowsVisibility(options);
+        // Initialiser l'affichage des dots avec les options par défaut
+        updateDotsVisibility(options);
 
         // Add responsive breakpoints if enabled
         if (parseBool(slider.dataset.responsiveEnabled)) {
@@ -255,12 +268,19 @@ document.addEventListener('DOMContentLoaded', function () {
             updateArrowsVisibility({
                 arrows: $slider.slick('slickGetOption', 'arrows')
             });
+            // Mettre à jour l'affichage des dots avec les paramètres actuels
+            updateDotsVisibility({
+                dots: $slider.slick('slickGetOption', 'dots')
+            });
 
             // Ajouter un événement pour détecter les changements de breakpoint
             $slider.on('breakpoint', function(event, slick, breakpoint) {
                 const currentSettings = $slider.slick('slickGetOption', null);
                 updateArrowsVisibility({
                     arrows: currentSettings.arrows
+                });
+                updateDotsVisibility({
+                    dots: currentSettings.dots
                 });
             });
 
