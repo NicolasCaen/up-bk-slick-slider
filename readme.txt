@@ -3,7 +3,7 @@ Contributors: GEHIN Nicolas
 Tags: block, slider, slick
 Requires at least: 6.1
 Tested up to: 6.4
-Stable tag: 1.6.0
+Stable tag: 1.7.2
 Requires PHP: 7.0
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -64,6 +64,13 @@ Yes, the slider is fully responsive and adapts to different screen sizes.
 Yes, you can configure the slider to display multiple slides simultaneously and control how many slides to scroll at a time.
 
 == Changelog ==
+
+= 1.7.2 =
+* Added: Editor preview now shows slidesToShow + 1 items in a horizontal strip, respects aspect ratio/slide height, and applies the gap spacing.
+* Added: New option `autoHideArrows` to automatically hide arrows when all slides are visible (with proper init/breakpoint/resize/window load handling).
+* Added: “Convertir en Custom Gallery” button for Meta/Post sources to build a gallery from current IDs.
+* Changed: Arrows start hidden on first paint when auto-hide is enabled to avoid flicker; JS re-evaluates after load.
+* Fixed: “Edit gallery” button opens the media modal correctly in editor preview.
 
 = 1.6.1 =
 * Correction d'un bug : import de  MediaPlaceholder pour l'ajout de post images

@@ -4,6 +4,22 @@ All notable changes to this project will be documented in this file.
 
 The format is based on Keep a Changelog, and this project adheres to Semantic Versioning where applicable.
 
+## [1.7.2] - 2025-10-07
+
+### Added
+- Editor preview shows a more realistic layout: displays `slidesToShow + 1` items in a horizontal strip, respects `aspectRatio`/`slideHeight`, and uses `gap` spacing.
+- New option: `autoHideArrows` to automatically hide arrows when all slides are visible. Exposed in the Navigation panel.
+- Button “Convertir en Custom Gallery” when source is Meta or Post Images. Converts current IDs to a gallery and switches `imageSource` to `gallery`.
+- Info notice in Sources panel explaining that meta/post data is read on editor load and the page should be saved/reloaded after meta changes.
+
+### Changed
+- Arrows are initially hidden on first paint when auto-hide is enabled to avoid flicker; JS re-evaluates on init/breakpoint/resize/window load.
+- Editor preview always shows arrow placeholders positioned according to current settings.
+
+### Fixed
+- “Edit gallery” button in editor preview now opens the media modal correctly.
+- More robust slidesToShow resolution per breakpoint in frontend view.
+
 ## [1.7.0] - 2025-10-07
 
 ### Added
@@ -27,4 +43,5 @@ The format is based on Keep a Changelog, and this project adheres to Semantic Ve
 ## [1.6.x] - 2025-09-xx
 - Internal improvements and minor fixes.
 
+[1.7.2]: https://example.com/compare/v1.7.0...v1.7.2
 [1.7.0]: https://example.com/compare/v1.6.1...v1.7.0
