@@ -83,6 +83,16 @@ export default function Edit({ attributes, setAttributes }) {
         return getCurrentPostId();
     }, []);
 
+    // Récupérer les metas du post courant (pour lire la meta des IDs si accessible)
+    const postMeta = useSelect((select) => {
+        const { getEditedPostAttribute } = select('core/editor');
+        try {
+            return getEditedPostAttribute('meta') || {};
+        } catch (e) {
+            return {};
+        }
+    }, []);
+
     // Charger les images attachées au post
     useEffect(() => {
         if (postId) {
@@ -114,6 +124,44 @@ export default function Edit({ attributes, setAttributes }) {
         }));
         setAttributes({ slides: newSlides });
         setMediaArray(newSlides);
+    };
+
+    // Convert current source (post/meta) to a custom gallery
+    const handleConvertToGallery = async () => {
+        try {
+            let ids = [];
+            if (imageSource === 'post') {
+                ids = (attachments || []).map(a => a.id).filter(Boolean);
+            } else if (imageSource === 'meta') {
+                const raw = (postMeta && metaKey) ? postMeta[metaKey] : '';
+                const str = Array.isArray(raw) ? raw.join(',') : (raw || '');
+                ids = str.split(',').map(s => parseInt(String(s).trim(), 10)).filter(n => Number.isInteger(n) && n > 0);
+            }
+            if (!ids.length) {
+                // nothing to convert
+                return;
+            }
+            // fetch media objects for ids to get URLs/alt
+            const uniqueIds = Array.from(new Set(ids));
+            const chunks = [uniqueIds];
+            // simple fetch (ids <= 100 per request typically)
+            let media = [];
+            for (const group of chunks) {
+                const query = encodeURIComponent(group.join(','));
+                const result = await apiFetch({ path: `/wp/v2/media?include=${query}&per_page=${group.length}` });
+                media = media.concat(result);
+            }
+            // preserve order of ids
+            const slidesFromIds = uniqueIds.map(id => {
+                const m = media.find(item => item.id === id);
+                return m ? { id: m.id, url: m.source_url, alt: m.alt_text || '' } : null;
+            }).filter(Boolean);
+            if (!slidesFromIds.length) return;
+            setAttributes({ imageSource: 'gallery', slides: slidesFromIds });
+            setMediaArray(slidesFromIds);
+        } catch (e) {
+            // silent fail in editor
+        }
     };
 
     const updateBreakpointSetting = (device, field, value) => {
@@ -196,6 +244,21 @@ export default function Edit({ attributes, setAttributes }) {
                             onChange={(value) => setAttributes({ metaKey: value })}
                             placeholder="_my_image_ids"
                         />
+                    )}
+
+                    {(imageSource === 'meta' || imageSource === 'post') && (
+                        <>
+                            <Button
+                                variant="secondary"
+                                onClick={handleConvertToGallery}
+                                style={{ marginTop: '10px' }}
+                            >
+                                {__('Convertir en Custom Gallery', 'up-bk-slick-slider')}
+                            </Button>
+                            <Notice status="info" isDismissible={false}>
+                                {__('Astuce: la valeur des images (meta ou images du post) est lue au chargement de l’éditeur. Si vous modifiez la meta sur cette page, enregistrez la page puis rechargez l’éditeur avant d’utiliser la conversion.', 'up-bk-slick-slider')}
+                            </Notice>
+                        </>
                     )}
                 </PanelBody>
 
@@ -819,6 +882,16 @@ export default function Edit({ attributes, setAttributes }) {
                                 </div>
                             ))}
                         </div>
+                    )}
+
+                    {imageSource !== 'gallery' && (
+                        <Button
+                            variant="secondary"
+                            onClick={handleConvertToGallery}
+                            style={{ marginTop: '10px' }}
+                        >
+                            {__('Convertir en Custom Gallery', 'up-bk-slick-slider')}
+                        </Button>
                     )}
 
                     {arrows && (
