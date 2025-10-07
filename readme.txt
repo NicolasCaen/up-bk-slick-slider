@@ -3,7 +3,7 @@ Contributors: GEHIN Nicolas
 Tags: block, slider, slick
 Requires at least: 6.1
 Tested up to: 6.4
-Stable tag: 1.7.2
+Stable tag: 1.7.3
 Requires PHP: 7.0
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -64,6 +64,12 @@ Yes, the slider is fully responsive and adapts to different screen sizes.
 Yes, you can configure the slider to display multiple slides simultaneously and control how many slides to scroll at a time.
 
 == Changelog ==
+
+= 1.7.3 =
+* Added: Inline figcaption editing per image directly in the editor preview (Custom Gallery) with an overlay field.
+* Added: Captions edited in the preview are synced back to the Media Library (attachments) via REST, with debounce.
+* Changed: Editor preview styling to make caption fields clearly visible and clickable above navigation.
+* Fixed: JSX issues in preview layout; ensured N+1 visible items and correct sizing.
 
 = 1.7.2 =
 * Added: Editor preview now shows slidesToShow + 1 items in a horizontal strip, respects aspect ratio/slide height, and applies the gap spacing.
