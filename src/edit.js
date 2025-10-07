@@ -869,6 +869,7 @@ export default function Edit({ attributes, setAttributes }) {
                                     <MediaUpload
                                         onSelect={onSelectImages}
                                         allowedTypes={ALLOWED_MEDIA_TYPES}
+                                        multiple
                                         gallery
                                         value={mediaArray.map(img => img.id).filter(Boolean)}
                                         render={({ open }) => (
