@@ -717,76 +717,129 @@ export default function Edit({ attributes, setAttributes }) {
                 }}
             >
                 <div className="slider-preview">
-                    {mediaArray.length === 0 ? (
-                        <MediaPlaceholder
-                            icon="format-gallery"
-                            labels={{
-                                title: __('Gallery', 'up-bk-slick-slider'),
-                                instructions: __('Drag images, upload new ones or select files from your library.', 'up-bk-slick-slider'),
-                            }}
-                            onSelect={onSelectImages}
-                            accept="image/*"
-                            allowedTypes={ALLOWED_MEDIA_TYPES}
-                            multiple
-                            value={mediaArray}
-                        />
+                    {imageSource === 'gallery' ? (
+                        mediaArray.length === 0 ? (
+                            <MediaPlaceholder
+                                icon="format-gallery"
+                                labels={{
+                                    title: __('Gallery', 'up-bk-slick-slider'),
+                                    instructions: __('Drag images, upload new ones or select files from your library.', 'up-bk-slick-slider'),
+                                }}
+                                onSelect={onSelectImages}
+                                accept="image/*"
+                                allowedTypes={ALLOWED_MEDIA_TYPES}
+                                multiple
+                                value={mediaArray}
+                            />
+                        ) : (
+                            <>
+                                <div className="slider-preview-items" style={{ 
+                                    display: 'flex',
+                                    gap: 'var(--slide-gap)',
+                                    margin: '0 10px',
+                                    overflow: 'hidden'
+                                }}>
+                                    {Array.from({ length: Math.max(1, slidesToShow) + 1 }).map((_, idx) => {
+                                        const img = mediaArray[(startIndex + idx) % mediaArray.length];
+                                        return (
+                                            <div key={(img && (img.id || img.url)) || idx} className="slider-preview-item" style={{
+                                                aspectRatio: fixedHeight ? 'auto' : (aspectRatio && aspectRatio !== 'auto' ? aspectRatio.replace('/', ' / ') : '16/9'),
+                                                height: fixedHeight ? slideHeight : 'auto',
+                                                width: `calc((100% - (var(--slide-gap) * ${Math.max(0, slidesToShow - 1)})) / ${Math.max(1, slidesToShow)})`,
+                                                flex: '0 0 auto'
+                                            }}>
+                                                {img ? (
+                                                    <img
+                                                        src={img.url}
+                                                        alt={img.alt}
+                                                        style={{
+                                                            width: '100%',
+                                                            height: '100%',
+                                                            objectFit: objectFit
+                                                        }}
+                                                    />
+                                                ) : null}
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+                                <MediaUploadCheck>
+                                    <MediaUpload
+                                        onSelect={onSelectImages}
+                                        allowedTypes={ALLOWED_MEDIA_TYPES}
+                                        multiple
+                                        gallery
+                                        value={mediaArray.map(img => img.id).filter(Boolean)}
+                                        render={({ open }) => (
+                                            <Button
+                                                className="edit-gallery-button"
+                                                onClick={open}
+                                            >
+                                                {__('Edit gallery', 'up-bk-slick-slider')}
+                                            </Button>
+                                        )}
+                                    />
+                                </MediaUploadCheck>
+                            </>
+                        )
                     ) : (
-                        <>
-                            <div className="slider-preview-items" style={{ 
-                                display: variableWidth ? 'flex' : 'grid',
-                                gridTemplateColumns: variableWidth ? 'none' : `repeat(${slidesToShow}, 1fr)`,
-                                gap: `var(--slide-gap)`,
-                                margin: '0 10px',
-                                overflowX: variableWidth ? 'auto' : 'hidden'
-                            }}>
-                                {mediaArray.slice(startIndex, startIndex + slidesToShow).map((img, index) => (
-                                    <div key={img.id || img.url} className="slider-preview-item" style={{
-                                        aspectRatio: fixedHeight ? 'auto' : '16/9',
-                                        height: fixedHeight ? slideHeight : 'auto',
-                                        width: variableWidth ? 'auto' : '100%',
-                                        flexShrink: variableWidth ? 0 : 1
-                                    }}>
-                                        <img
-                                            src={img.url}
-                                            alt={img.alt}
-                                            style={{
-                                                width: variableWidth ? 'auto' : '100%',
-                                                height: '100%',
-                                                objectFit: objectFit
-                                            }}
-                                        />
-                                    </div>
-                                ))}
-                            </div>
-                            {arrows && (
-                                <div className="wp-block-up-bk-slick-slider__nav">
-                                    <div 
-                                        className={`wp-block-up-bk-slick-slider__nav__arrow wp-block-up-bk-slick-slider__nav__arrow--prev ${startIndex === 0 ? 'disabled' : ''}`}
-                                        onClick={handlePrevClick}
-                                        style={{ opacity: startIndex === 0 ? 0.5 : 1 }}
-                                    >
-                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
-                                            <path d="M14.6 7.4L10 12l4.6 4.6L13.2 18l-6-6 6-6z"/>
-                                        </svg>
-                                    </div>
-                                    <div 
-                                        className={`wp-block-up-bk-slick-slider__nav__arrow wp-block-up-bk-slick-slider__nav__arrow--next ${startIndex >= mediaArray.length - slidesToShow ? 'disabled' : ''}`}
-                                        onClick={handleNextClick}
-                                        style={{ opacity: startIndex >= mediaArray.length - slidesToShow ? 0.5 : 1 }}
-                                    >
-                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
-                                            <path d="M9.4 18L8 16.6l4.6-4.6L8 7.4 9.4 6l6 6z"/>
-                                        </svg>
+                        // Placeholder preview for meta/post sources
+                        <div className="slider-preview-items" style={{ 
+                            display: 'flex',
+                            gap: 'var(--slide-gap)',
+                            margin: '0 10px',
+                            overflow: 'hidden'
+                        }}>
+                            {Array.from({ length: Math.max(1, slidesToShow) + 1 }).map((_, idx) => (
+                                <div key={idx} className="slider-preview-item" style={{
+                                    position: 'relative',
+                                    background: '#f3f4f6',
+                                    border: '1px dashed #cbd5e1',
+                                    color: '#334155',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    textAlign: 'center',
+                                    padding: '8px',
+                                    aspectRatio: fixedHeight ? 'auto' : (aspectRatio && aspectRatio !== 'auto' ? aspectRatio.replace('/', ' / ') : '16/9'),
+                                    height: fixedHeight ? slideHeight : 'auto',
+                                    width: `calc((100% - (var(--slide-gap) * ${Math.max(0, slidesToShow - 1)})) / ${Math.max(1, slidesToShow)})`,
+                                    flex: '0 0 auto'
+                                }}>
+                                    <div style={{ pointerEvents: 'none' }}>
+                                        {imageSource === 'meta' ? (
+                                            <>
+                                                <strong>{__('Afficher la galerie :', 'up-bk-slick-slider')}</strong>
+                                                <div>{metaKey ? metaKey : __('(meta non définie)', 'up-bk-slick-slider')}</div>
+                                            </>
+                                        ) : (
+                                            <strong>{__('Afficher les images téléversées sur le post', 'up-bk-slick-slider')}</strong>
+                                        )}
                                     </div>
                                 </div>
-                            )}
-                            <Button
-                                className="edit-gallery-button"
-                                onClick={() => setIsEditingGallery(true)}
+                            ))}
+                        </div>
+                    )}
+
+                    {arrows && (
+                        <div className="wp-block-up-bk-slick-slider__nav">
+                            <div 
+                                className="wp-block-up-bk-slick-slider__nav__arrow wp-block-up-bk-slick-slider__nav__arrow--prev"
+                                onClick={handlePrevClick}
                             >
-                                {__('Edit gallery', 'up-bk-slick-slider')}
-                            </Button>
-                        </>
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+                                    <path d="M14.6 7.4L10 12l4.6 4.6L13.2 18l-6-6 6-6z"/>
+                                </svg>
+                            </div>
+                            <div 
+                                className="wp-block-up-bk-slick-slider__nav__arrow wp-block-up-bk-slick-slider__nav__arrow--next"
+                                onClick={handleNextClick}
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+                                    <path d="M9.4 18L8 16.6l4.6-4.6L8 7.4 9.4 6l6 6z"/>
+                                </svg>
+                            </div>
+                        </div>
                     )}
                 </div>
             </div>
