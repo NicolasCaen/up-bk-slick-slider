@@ -38,6 +38,7 @@ export default function Edit({ attributes, setAttributes }) {
         autoplay,
         autoplaySpeed,
         arrows,
+        autoHideArrows,
         dots,
         infinite,
         speed,
@@ -639,6 +640,12 @@ export default function Edit({ attributes, setAttributes }) {
                         label={__('Show arrows', 'up-bk-slick-slider')}
                         checked={arrows}
                         onChange={(value) => setAttributes({ arrows: value })}
+                    />
+                    <ToggleControl
+                        label={__('Auto-hide arrows when all slides are visible', 'up-bk-slick-slider')}
+                        checked={!!autoHideArrows}
+                        onChange={(value) => setAttributes({ autoHideArrows: value })}
+                        help={__('If total slides ≤ slides to show (including per breakpoint), hide arrows automatically.', 'up-bk-slick-slider')}
                     />
                     {arrows && (
                         <>

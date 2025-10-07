@@ -33,6 +33,8 @@ $slideHeight = $slick_attributes['slideHeight'] ?? '400px';
 $objectFit = $slick_attributes['objectFit'] ?? 'cover';
 $imageSize = $slick_attributes['imageSize'] ?? 'full';
 $gap = intval($slick_attributes['gap'] ?? 0);
+// Option: auto-hide arrows when all slides are visible
+$autoHideArrows = filter_var($slick_attributes['autoHideArrows'] ?? false, FILTER_VALIDATE_BOOLEAN);
 // New block attributes
 $aspectRatioAttr = $slick_attributes['aspectRatio'] ?? 'auto';
 $showFigcaptionAttr = filter_var($slick_attributes['showFigcaption'] ?? false, FILTER_VALIDATE_BOOLEAN);
@@ -125,6 +127,10 @@ if (($slick_attributes['imageSource'] ?? '') === 'meta') {
     }
 }
 
+// Compute initial arrows visibility to avoid flash on first paint
+// If auto-hide is enabled, start with arrows hidden; JS will enable if needed.
+$initial_show_arrows = $autoHideArrows ? false : $arrows;
+
 // Initial styles
 $initial_styles = [];
 if ($fixedHeight) {
@@ -163,8 +169,9 @@ $right_arrow = apply_filters('bk_slider_arrow_right_' . $arrow_type, $right_arro
 $wrapper_attributes = get_block_wrapper_attributes([
     'class' => 'wp-block-up-bk-slick-slider',
     'data-arrow-position' => $arrow_position,
-    'data-show-arrows' => $arrows ? 'true' : 'false',
+    'data-show-arrows' => $initial_show_arrows ? 'true' : 'false',
     'data-show-dots' => $dots ? 'true' : 'false',
+    'data-auto-hide-arrows' => $autoHideArrows ? 'true' : 'false',
 ]);
 
 ?>

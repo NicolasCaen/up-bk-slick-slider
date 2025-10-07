@@ -73,6 +73,10 @@
             "type": "boolean",
             "default": true
         },
+        "autoHideArrows": {
+            "type": "boolean",
+            "default": false
+        },
         "arrowType": {
             "type": "string",
             "default": "type1"

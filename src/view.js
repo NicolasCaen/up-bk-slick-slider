@@ -35,6 +35,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     sliders.forEach(function (sliderWrapper, index) {
         const slider = sliderWrapper.querySelector('.slick-slider');
+        const autoHideEnabled = sliderWrapper.getAttribute('data-auto-hide-arrows') === 'true';
         const prevArrow = sliderWrapper.querySelector('.wp-block-up-bk-slick-slider__nav__arrow--prev');
         const nextArrow = sliderWrapper.querySelector('.wp-block-up-bk-slick-slider__nav__arrow--next');
         const dotsContainer = sliderWrapper.querySelector('.slick-dots');
@@ -97,6 +98,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 updateDotsVisibility({
                     dots: currentSettings.dots
                 });
+                // Auto-hide arrows if all slides are visible
+                autoHideArrows($slider);
             }
         }
 
@@ -135,6 +138,47 @@ document.addEventListener('DOMContentLoaded', function () {
         updateArrowsVisibility(options);
         // Initialiser l'affichage des dots avec les options par défaut
         updateDotsVisibility(options);
+
+        // Helper: compute and toggle arrows when all slides are visible
+        function getEffectiveSlidesToShow(slickObj) {
+            try {
+                if (!slickObj) return 1;
+                const width = window.innerWidth;
+                let value = slickObj.options.slidesToShow || 1;
+                const responsive = slickObj.options.responsive || [];
+                // Sort by ascending breakpoint to find first matching
+                const sorted = [...responsive].sort((a,b) => a.breakpoint - b.breakpoint);
+                for (let i = 0; i < sorted.length; i++) {
+                    const bp = sorted[i];
+                    if (width <= bp.breakpoint && bp.settings && typeof bp.settings.slidesToShow !== 'undefined') {
+                        value = parseInt(bp.settings.slidesToShow, 10) || value;
+                        break;
+                    }
+                }
+                return value;
+            } catch(e) { return 1; }
+        }
+
+        function autoHideArrows($slider) {
+            try {
+                if (!$slider || !$slider.length) return;
+                const slickObj = $slider.slick('getSlick');
+                if (!slickObj) return;
+
+                // Count original slides (exclude clones)
+                const totalSlides = $slider.find('.slick-slide').not('.slick-cloned').length || 0;
+                // Effective slidesToShow for current breakpoint
+                const currentSlidesToShow = getEffectiveSlidesToShow(slickObj);
+
+                const shouldHide = totalSlides > 0 && currentSlidesToShow >= totalSlides;
+                sliderWrapper.setAttribute('data-show-arrows', shouldHide ? 'false' : 'true');
+
+                // Optionally sync Slick option (not strictly required if CSS hides)
+                // $slider.slick('slickSetOption', 'arrows', !shouldHide, true);
+            } catch (e) {
+                // no-op
+            }
+        }
 
         // Add responsive breakpoints if enabled
         if (parseBool(slider.dataset.responsiveEnabled)) {
@@ -258,6 +302,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
             // Mettre à jour les styles au chargement
             updateResponsiveStyles();
+            // Auto-hide arrows on init (only if enabled)
+            if (autoHideEnabled) {
+                autoHideArrows($slider);
+            }
 
             // Mettre à jour les styles lors des changements de breakpoint
             $slider.on('breakpoint', updateResponsiveStyles);
@@ -272,7 +320,8 @@ document.addEventListener('DOMContentLoaded', function () {
             updateDotsVisibility({
                 dots: $slider.slick('slickGetOption', 'dots')
             });
-
+            // Recompute auto-hide on breakpoint
+            
             // Ajouter un événement pour détecter les changements de breakpoint
             $slider.on('breakpoint', function(event, slick, breakpoint) {
                 const currentSettings = $slider.slick('slickGetOption', null);
@@ -282,10 +331,30 @@ document.addEventListener('DOMContentLoaded', function () {
                 updateDotsVisibility({
                     dots: currentSettings.dots
                 });
+                if (autoHideEnabled) {
+                    autoHideArrows($slider);
+                }
             });
 
             // Ajouter l'événement resize avec debounce
-            window.addEventListener('resize', debounce(updateResponsiveSettings, 250));
+            window.addEventListener('resize', debounce(function() {
+                updateResponsiveSettings();
+                if (autoHideEnabled) {
+                    autoHideArrows($slider);
+                }
+            }, 250));
+
+            // Re-evaluate once everything is fully loaded (images, fonts)
+            window.addEventListener('load', function() {
+                try {
+                    if ($slider && $slider.length && $slider.hasClass('slick-initialized')) {
+                        $slider.slick('setPosition');
+                        if (autoHideEnabled) {
+                            autoHideArrows($slider);
+                        }
+                    }
+                } catch (e) { /* no-op */ }
+            });
 
         } catch (e) {
             console.error('Error initializing slider:', e);
