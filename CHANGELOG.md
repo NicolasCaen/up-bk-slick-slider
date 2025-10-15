@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 
 The format is based on Keep a Changelog, and this project adheres to Semantic Versioning where applicable.
 
+## [1.7.4] - 2025-10-15
+
+### Added
+- New aspect ratio options: 2:1, 1:2, 3:4, 2:3, 9:16, 5:4, 4:5
+
 ## [1.7.2] - 2025-10-07
 
 ### Added
