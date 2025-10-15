@@ -16,7 +16,7 @@ if (!empty($block) && isset($block->context['postId'])) {
 $autoplay = filter_var($slick_attributes['autoplay'] ?? true, FILTER_VALIDATE_BOOLEAN);
 $autoplaySpeed = intval($slick_attributes['autoplaySpeed'] ?? 3000);
 $arrows = filter_var($slick_attributes['arrows'] ?? true, FILTER_VALIDATE_BOOLEAN);
-$dots = filter_var($slick_attributes['dots'] ?? true, false);
+$dots = filter_var($slick_attributes['dots'] ?? true, FILTER_VALIDATE_BOOLEAN);
 $infinite = filter_var($slick_attributes['infinite'] ?? true, FILTER_VALIDATE_BOOLEAN);
 $speed = intval($slick_attributes['speed'] ?? 500);
 $slidesToShow = intval($slick_attributes['slidesToShow'] ?? 1);
