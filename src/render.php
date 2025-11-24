@@ -189,28 +189,32 @@ $wrapper_attributes = get_block_wrapper_attributes([
         <style>
             .wp-block-up-bk-slick-slider__lightbox {
            position: absolute;
-           bottom: 0;
-           left: 50%;
-           transform: translateX(-50%) translateY(-100%);
+           bottom: 1.5rem;
+           right:1.5rem;
+      
             }
             .wp-block-up-bk-slick-slider__lightbox-button {
                 display: inline-flex;
                 align-items: center;
                 justify-content: center;
-                padding: 0.5rem 1.25rem;
-     
+                padding:.5em;
+                border-radius:1000px;
+                width: 3rem;
+                height:3rem;
                 border: 1px solid currentColor;
                 font-size: 0.875rem;
                 text-decoration: none;
                 cursor: pointer;
-                color:white;
-                background: var(--wp--preset--color--base-2);
+                color:var(--wp--preset--color--base-2);
+                background: rgba(255,255,255,.8);
                 border-color:transparent;
                 transition: all 0.2s ease;
+                box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+
             }
             .wp-block-up-bk-slick-slider__lightbox-button:hover {
-                background: white;
-                color:  var(--wp--preset--color--base-2);
+                background: var(--wp--preset--color--base-2);
+                color: white ;
             }
         </style>
     <?php endif; ?>
@@ -283,7 +287,10 @@ $wrapper_attributes = get_block_wrapper_attributes([
     <?php if ($enableLightbox && !empty($slides) && !empty($lightbox_group)) : ?>
         <div class="wp-block-up-bk-slick-slider__lightbox">
             <button type="button" class="wp-block-up-bk-slick-slider__lightbox-button" data-index="0" data-lightbox-group="<?php echo esc_attr($lightbox_group); ?>">
-                <?php echo esc_html__('Voir les images en grand', 'up-bk-slick-slider'); ?>
+                
+<svg width="2.5rem" height="2.5rem" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M16.6725 16.6412L21 21M19 11C19 15.4183 15.4183 19 11 19C6.58172 19 3 15.4183 3 11C3 6.58172 6.58172 3 11 3C15.4183 3 19 6.58172 19 11Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
             </button>
         </div>
     <?php endif; ?>
