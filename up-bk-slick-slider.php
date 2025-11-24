@@ -107,7 +107,34 @@ function up_bk_slick_slider_render_callback($attributes, $content, $block) {
         wp_enqueue_script('up-bk-slick-slider-fancybox-js');
         wp_add_inline_script(
             'up-bk-slick-slider-fancybox-js',
-            "jQuery(function($){ if ($.fancybox && $('[data-fancybox]').length){ $('[data-fancybox]').fancybox(); }});"
+            "jQuery(function($){\n" .
+            "  if (!$.fancybox) return;\n" .
+            "  $('.wp-block-up-bk-slick-slider').each(function(){\n" .
+            "    var wrapper = $(this);\n" .
+            "    var slider = wrapper.find('.slick-slider');\n" .
+            "    var btn = wrapper.find('.wp-block-up-bk-slick-slider__lightbox-button');\n" .
+            "    if (!btn.length) return;\n" .
+            "    // Update button data-index on slide change\n" .
+            "    slider.on('afterChange', function(event, slick, currentSlide){\n" .
+            "      btn.attr('data-index', currentSlide);\n" .
+            "    });\n" .
+            "    // Open Fancybox on button click\n" .
+            "    btn.on('click', function(e){\n" .
+            "      e.preventDefault();\n" .
+            "      var group = $(this).data('lightbox-group');\n" .
+            "      if (!group) return;\n" .
+            "      var items = [];\n" .
+            "      slider.find('.slick-slide-item[data-lightbox-group=\"' + group + '\"]').not('.slick-cloned').each(function(){\n" .
+            "        var src = $(this).data('lightbox-src');\n" .
+            "        if (src) { items.push({ src: src, type: 'image' }); }\n" .
+            "      });\n" .
+            "      if (!items.length) return;\n" .
+            "      var index = parseInt($(this).attr('data-index'), 10) || 0;\n" .
+            "      if (index < 0 || index >= items.length) { index = 0; }\n" .
+            "      $.fancybox.open(items, {}, index);\n" .
+            "    });\n" .
+            "  });\n" .
+            "});"
         );
     }
 

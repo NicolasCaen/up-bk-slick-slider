@@ -187,35 +187,30 @@ $wrapper_attributes = get_block_wrapper_attributes([
 <div <?php echo $wrapper_attributes; ?> <?php echo $nav_styles; ?>>
     <?php if ($enableLightbox) : ?>
         <style>
-            .wp-block-up-bk-slick-slider .slick-slide-figure {
-                position: relative;
+            .wp-block-up-bk-slick-slider__lightbox {
+           position: absolute;
+           bottom: 0;
+           left: 50%;
+           transform: translateX(-50%) translateY(-100%);
             }
-            .wp-block-up-bk-slick-slider .slick-slide-zoom-trigger {
-                position: relative;
-                display: block;
-                height: 100%;
-            }
-            .wp-block-up-bk-slick-slider .slick-slide-zoom-trigger img {
-                display: block;
-            }
-            .wp-block-up-bk-slick-slider .slick-slide-zoom-icon {
-                position: absolute;
-                right: 0.75rem;
-                bottom: 0.75rem;
+            .wp-block-up-bk-slick-slider__lightbox-button {
                 display: inline-flex;
                 align-items: center;
                 justify-content: center;
-                width: 2.25rem;
-                height: 2.25rem;
-                border-radius: 999px;
-                background: rgba(0, 0, 0, 0.6);
-                color: #fff;
-                pointer-events: none;
+                padding: 0.5rem 1.25rem;
+     
+                border: 1px solid currentColor;
+                font-size: 0.875rem;
+                text-decoration: none;
+                cursor: pointer;
+                color:white;
+                background: var(--wp--preset--color--base-2);
+                border-color:transparent;
+                transition: all 0.2s ease;
             }
-            .wp-block-up-bk-slick-slider .slick-slide-zoom-icon svg {
-                width: 1.25rem;
-                height: 1.25rem;
-                fill: currentColor;
+            .wp-block-up-bk-slick-slider__lightbox-button:hover {
+                background: white;
+                color:  var(--wp--preset--color--base-2);
             }
         </style>
     <?php endif; ?>
@@ -258,37 +253,25 @@ $wrapper_attributes = get_block_wrapper_attributes([
                     }
                 }
                 $img_style = trim($aspect_ratio_style . ' object-fit: ' . esc_attr($objectFit) . ';');
-                $lightbox_url = $img_url;
+                $lightbox_url = '';
                 if ($enableLightbox && $img_id) {
                     $full_url = wp_get_attachment_image_url($img_id, 'full');
                     if ($full_url) {
                         $lightbox_url = $full_url;
                     }
                 }
+                if ($enableLightbox && !$lightbox_url && !empty($slide['url'])) {
+                    $lightbox_url = $slide['url'];
+                }
             ?>
-            <div class="slick-slide-item" tabindex="-1">
+            <div class="slick-slide-item" tabindex="-1"<?php echo ($enableLightbox && $lightbox_url) ? ' data-lightbox-src="' . esc_url($lightbox_url) . '"' : ''; ?><?php echo ($enableLightbox && $lightbox_url && !empty($lightbox_group)) ? ' data-lightbox-group="' . esc_attr($lightbox_group) . '"' : ''; ?>>
                 <figure class="slick-slide-figure" style="<?php echo esc_attr($aspect_ratio_style); ?>">
-                    <?php if ($enableLightbox && !empty($lightbox_url) && !empty($lightbox_group)) : ?>
-                        <a href="<?php echo esc_url($lightbox_url); ?>"
-                           data-fancybox="<?php echo esc_attr($lightbox_group); ?>"
-                           class="slick-slide-zoom-trigger">
-                    <?php endif; ?>
-                        <img 
-                            src="<?php echo esc_url($img_url); ?>" 
-                            alt="<?php echo esc_attr($img_alt); ?>"
-                            decoding="async"
-                            style="<?php echo esc_attr($img_style); ?>"
-                        />
-                        <?php if ($enableLightbox && !empty($lightbox_url) && !empty($lightbox_group)) : ?>
-                            <span class="slick-slide-zoom-icon" aria-hidden="true">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-                                    <path d="M10.5 3a7.5 7.5 0 015.916 12.144l3.72 3.72-1.414 1.414-3.72-3.72A7.5 7.5 0 1110.5 3zm0 2a5.5 5.5 0 100 11 5.5 5.5 0 000-11z" />
-                                </svg>
-                            </span>
-                        <?php endif; ?>
-                    <?php if ($enableLightbox && !empty($lightbox_url) && !empty($lightbox_group)) : ?>
-                        </a>
-                    <?php endif; ?>
+                    <img 
+                        src="<?php echo esc_url($img_url); ?>" 
+                        alt="<?php echo esc_attr($img_alt); ?>"
+                        decoding="async"
+                        style="<?php echo esc_attr($img_style); ?>"
+                    />
                     <?php if ($showFigcaptionAttr && !empty($caption)) : ?>
                         <figcaption class="slick-slide-caption"><?php echo esc_html($caption); ?></figcaption>
                     <?php endif; ?>
@@ -296,5 +279,13 @@ $wrapper_attributes = get_block_wrapper_attributes([
             </div>
         <?php endforeach; ?>
     </div>
+
+    <?php if ($enableLightbox && !empty($slides) && !empty($lightbox_group)) : ?>
+        <div class="wp-block-up-bk-slick-slider__lightbox">
+            <button type="button" class="wp-block-up-bk-slick-slider__lightbox-button" data-index="0" data-lightbox-group="<?php echo esc_attr($lightbox_group); ?>">
+                <?php echo esc_html__('Voir les images en grand', 'up-bk-slick-slider'); ?>
+            </button>
+        </div>
+    <?php endif; ?>
 </div>
 
