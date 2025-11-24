@@ -38,6 +38,8 @@ $autoHideArrows = filter_var($slick_attributes['autoHideArrows'] ?? false, FILTE
 // New block attributes
 $aspectRatioAttr = $slick_attributes['aspectRatio'] ?? 'auto';
 $showFigcaptionAttr = filter_var($slick_attributes['showFigcaption'] ?? false, FILTER_VALIDATE_BOOLEAN);
+// Lightbox / Fancybox option
+$enableLightbox = filter_var($slick_attributes['enableLightbox'] ?? false, FILTER_VALIDATE_BOOLEAN);
 
 // Prepare aspect ratio style if any (from block attribute)
 $aspect_ratio_style = '';
@@ -143,6 +145,13 @@ $initial_styles[] = sprintf('--desktop-object-fit: %s', esc_attr($objectFit));
 $style_string = implode('; ', $initial_styles);
 
 
+// Lightbox group for Fancybox (unique per slider render)
+$lightbox_group = '';
+if ($enableLightbox && !empty($slides)) {
+    $lightbox_group = 'up-bk-slick-slider-' . uniqid();
+}
+
+
 // Get arrow SVG content based on type
 $arrow_type = $attributes['arrowType'] ?? 'type1';
 $arrow_position = $attributes['arrowPosition'] ?? 'sides';
@@ -176,6 +185,40 @@ $wrapper_attributes = get_block_wrapper_attributes([
 
 ?>
 <div <?php echo $wrapper_attributes; ?> <?php echo $nav_styles; ?>>
+    <?php if ($enableLightbox) : ?>
+        <style>
+            .wp-block-up-bk-slick-slider .slick-slide-figure {
+                position: relative;
+            }
+            .wp-block-up-bk-slick-slider .slick-slide-zoom-trigger {
+                position: relative;
+                display: block;
+                height: 100%;
+            }
+            .wp-block-up-bk-slick-slider .slick-slide-zoom-trigger img {
+                display: block;
+            }
+            .wp-block-up-bk-slick-slider .slick-slide-zoom-icon {
+                position: absolute;
+                right: 0.75rem;
+                bottom: 0.75rem;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                width: 2.25rem;
+                height: 2.25rem;
+                border-radius: 999px;
+                background: rgba(0, 0, 0, 0.6);
+                color: #fff;
+                pointer-events: none;
+            }
+            .wp-block-up-bk-slick-slider .slick-slide-zoom-icon svg {
+                width: 1.25rem;
+                height: 1.25rem;
+                fill: currentColor;
+            }
+        </style>
+    <?php endif; ?>
     <div class="wp-block-up-bk-slick-slider__nav">
         <div class="wp-block-up-bk-slick-slider__nav__arrow wp-block-up-bk-slick-slider__nav__arrow--prev">
             <?php echo $left_arrow; ?>
@@ -215,15 +258,37 @@ $wrapper_attributes = get_block_wrapper_attributes([
                     }
                 }
                 $img_style = trim($aspect_ratio_style . ' object-fit: ' . esc_attr($objectFit) . ';');
+                $lightbox_url = $img_url;
+                if ($enableLightbox && $img_id) {
+                    $full_url = wp_get_attachment_image_url($img_id, 'full');
+                    if ($full_url) {
+                        $lightbox_url = $full_url;
+                    }
+                }
             ?>
             <div class="slick-slide-item" tabindex="-1">
                 <figure class="slick-slide-figure" style="<?php echo esc_attr($aspect_ratio_style); ?>">
-                    <img 
-                        src="<?php echo esc_url($img_url); ?>" 
-                        alt="<?php echo esc_attr($img_alt); ?>"
-                        decoding="async"
-                        style="<?php echo esc_attr($img_style); ?>"
-                    />
+                    <?php if ($enableLightbox && !empty($lightbox_url) && !empty($lightbox_group)) : ?>
+                        <a href="<?php echo esc_url($lightbox_url); ?>"
+                           data-fancybox="<?php echo esc_attr($lightbox_group); ?>"
+                           class="slick-slide-zoom-trigger">
+                    <?php endif; ?>
+                        <img 
+                            src="<?php echo esc_url($img_url); ?>" 
+                            alt="<?php echo esc_attr($img_alt); ?>"
+                            decoding="async"
+                            style="<?php echo esc_attr($img_style); ?>"
+                        />
+                        <?php if ($enableLightbox && !empty($lightbox_url) && !empty($lightbox_group)) : ?>
+                            <span class="slick-slide-zoom-icon" aria-hidden="true">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                                    <path d="M10.5 3a7.5 7.5 0 015.916 12.144l3.72 3.72-1.414 1.414-3.72-3.72A7.5 7.5 0 1110.5 3zm0 2a5.5 5.5 0 100 11 5.5 5.5 0 000-11z" />
+                                </svg>
+                            </span>
+                        <?php endif; ?>
+                    <?php if ($enableLightbox && !empty($lightbox_url) && !empty($lightbox_group)) : ?>
+                        </a>
+                    <?php endif; ?>
                     <?php if ($showFigcaptionAttr && !empty($caption)) : ?>
                         <figcaption class="slick-slide-caption"><?php echo esc_html($caption); ?></figcaption>
                     <?php endif; ?>

@@ -61,6 +61,10 @@
             "type": "boolean",
             "default": false
         },
+        "enableLightbox": {
+            "type": "boolean",
+            "default": false
+        },
         "autoplay": {
             "type": "boolean",
             "default": true

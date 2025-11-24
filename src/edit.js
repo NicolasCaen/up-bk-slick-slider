@@ -36,6 +36,7 @@ export default function Edit({ attributes, setAttributes }) {
         imageSize,
         aspectRatio,
         showFigcaption,
+        enableLightbox,
         autoplay,
         autoplaySpeed,
         arrows,
@@ -327,6 +328,12 @@ export default function Edit({ attributes, setAttributes }) {
                         label={__('Show Figcaption', 'up-bk-slick-slider')}
                         checked={!!showFigcaption}
                         onChange={(value) => setAttributes({ showFigcaption: value })}
+                    />
+                    <ToggleControl
+                        label={__('Enable Fancybox lightbox', 'up-bk-slick-slider')}
+                        checked={!!enableLightbox}
+                        onChange={(value) => setAttributes({ enableLightbox: value })}
+                        help={__('Wrap each slide image in a Fancybox link with a zoom icon overlay.', 'up-bk-slick-slider')}
                     />
                 </PanelBody>
 

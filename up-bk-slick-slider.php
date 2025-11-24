@@ -48,6 +48,22 @@ function up_bk_slick_slider_block_init() {
         '1.8.1'
     );
 
+    // Register Fancybox assets
+    wp_register_style(
+        'up-bk-slick-slider-fancybox-css',
+        'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css',
+        array(),
+        '3.5.7'
+    );
+
+    wp_register_script(
+        'up-bk-slick-slider-fancybox-js',
+        'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js',
+        array('jquery'),
+        '3.5.7',
+        true
+    );
+
     // Register block style
     wp_register_style(
         'up-bk-slick-slider-style',
@@ -84,6 +100,16 @@ function up_bk_slick_slider_render_callback($attributes, $content, $block) {
     wp_enqueue_script('slick-carousel-js');
     wp_enqueue_style('slick-carousel-css');
     wp_enqueue_style('slick-carousel-theme');
+
+    $enable_lightbox = !empty($attributes['enableLightbox']);
+    if ($enable_lightbox) {
+        wp_enqueue_style('up-bk-slick-slider-fancybox-css');
+        wp_enqueue_script('up-bk-slick-slider-fancybox-js');
+        wp_add_inline_script(
+            'up-bk-slick-slider-fancybox-js',
+            "jQuery(function($){ if ($.fancybox && $('[data-fancybox]').length){ $('[data-fancybox]').fancybox(); }});"
+        );
+    }
 
     ob_start();
     // Use source render template directly (build may not exist in some environments)
