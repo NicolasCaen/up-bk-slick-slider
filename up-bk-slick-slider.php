@@ -131,7 +131,17 @@ function up_bk_slick_slider_render_callback($attributes, $content, $block) {
             "      if (!items.length) return;\n" .
             "      var index = parseInt($(this).attr('data-index'), 10) || 0;\n" .
             "      if (index < 0 || index >= items.length) { index = 0; }\n" .
-            "      $.fancybox.open(items, {}, index);\n" .
+            "      // Get slider arrows HTML\n" .
+            "      var leftArrow = wrapper.find('.wp-block-up-bk-slick-slider__nav__arrow--prev').html();\n" .
+            "      var rightArrow = wrapper.find('.wp-block-up-bk-slick-slider__nav__arrow--next').html();\n" .
+            "      $.fancybox.open(items, {\n" .
+            "        loop: true,\n" .
+            "        buttons: ['close'],\n" .
+            "        btnTpl: {\n" .
+            "          arrowLeft: '<button data-fancybox-prev class=\"fancybox-button fancybox-button--arrow_left\" title=\"Previous\">' + leftArrow + '</button>',\n" .
+            "          arrowRight: '<button data-fancybox-next class=\"fancybox-button fancybox-button--arrow_right\" title=\"Next\">' + rightArrow + '</button>'\n" .
+            "        }\n" .
+            "      }, index);\n" .
             "    });\n" .
             "  });\n" .
             "});"
