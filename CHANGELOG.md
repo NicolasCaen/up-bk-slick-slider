@@ -4,6 +4,16 @@ All notable changes to this project will be documented in this file.
 
 The format is based on Keep a Changelog, and this project adheres to Semantic Versioning where applicable.
 
+## [1.8.0] - 2025-11-24
+
+### Added
+- Option d'activer un lightbox Fancybox synchronisé avec le slider.
+- Bouton unique sous le slider qui ouvre Fancybox sur l'image correspondant au slide courant (index synchronisé via l'événement `afterChange` de Slick, en ignorant les slides clonés).
+- Réutilisation des SVG de flèches du slider comme flèches de navigation Fancybox pour une interface cohérente.
+
+### Changed
+- Amélioration de l'intégration Slick/Fancybox pour une logique plus simple et plus fiable (suppression des overlays complexes et gestion par bouton dédié).
+
 ## [1.7.4] - 2025-10-15
 
 ### Added
