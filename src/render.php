@@ -189,8 +189,8 @@ $wrapper_attributes = get_block_wrapper_attributes([
         <style>
             .wp-block-up-bk-slick-slider__lightbox {
            position: absolute;
-           bottom: 1.5rem;
-           right:1.5rem;
+           bottom: 1rem;
+           right:.25rem;
       
             }
             .wp-block-up-bk-slick-slider__lightbox-button {
@@ -199,8 +199,8 @@ $wrapper_attributes = get_block_wrapper_attributes([
                 justify-content: center;
                 padding:.5em;
                 border-radius:1000px;
-                width: 3rem;
-                height:3rem;
+                width: 2.5rem;
+                height:2.5rem;
                 border: 1px solid currentColor;
                 font-size: 0.875rem;
                 text-decoration: none;
